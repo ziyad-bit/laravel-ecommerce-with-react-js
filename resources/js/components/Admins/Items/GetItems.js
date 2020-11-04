@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { getitems } from "./functions";
 
 class GetItems extends Component {
@@ -16,6 +17,8 @@ class GetItems extends Component {
 
     render() {
         return (
+            <div>
+                <Link className='btn btn-info' to='/add/item'>Add item</Link>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -32,7 +35,7 @@ class GetItems extends Component {
                         <th scope="row">1</th>
                         <td>{item.name}</td>
                         <td>{item.description}</td>
-                        <td>..</td>
+                        <td><Link className='btn btn-info' to={'/edit/item/'+item.id}>edit item</Link></td>
                     </tr>
                         )
                     })}
@@ -40,6 +43,7 @@ class GetItems extends Component {
                     
                 </tbody>
             </table>
+            </div>
         );
     }
 }

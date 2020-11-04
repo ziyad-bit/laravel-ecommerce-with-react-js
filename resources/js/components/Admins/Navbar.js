@@ -31,6 +31,12 @@ class Navbar extends Component {
                         Home <span class="sr-only">(current)</span>
                     </Link>
                 </li>
+                <li class="nav-item active">
+                    <Link class="nav-link" to="/getitem">
+                        Items 
+                    </Link>
+                </li>
+                
                 <li class="nav-item">
                     <a
                         class="nav-link"

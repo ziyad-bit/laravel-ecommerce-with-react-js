@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route } from "react-router-dom";
 import Home from "./Admins/Home";
 
 import Login from "./Admins/Login";
 import Navbar from "./Admins/Navbar";
-import AddItems from "./items/AddItems";
-import GetItems from "./items/GetItems";
+import AddItems from "./Admins/Items/AddItems";
+import GetItems from "./Admins/Items/GetItems";
+import EditItems from "./Admins/Items/EditItem";
 
 
 class App extends Component {
@@ -16,8 +17,9 @@ class App extends Component {
                 <Router>
                 <Navbar />
                 <div className="container">
+                        <Route exact path="/edit/item/:id"     component={EditItems} />
                         <Route exact path="/getitem"     component={GetItems} />
-                        <Route exact path="/additem"     component={AddItems} />
+                        <Route exact path="/add/item"     component={AddItems} />
                         <Route exact path="/home"        component={Home} />
                         <Route exact path="/adminsLogin" component={Login} />
                     

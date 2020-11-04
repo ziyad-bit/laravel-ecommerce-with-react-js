@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getauthadmin } from "../Admins/functions";
+import { getauthadmin } from "../../Admins/functions";
 import { additems } from "./functions";
 
 class AddItems extends Component {
