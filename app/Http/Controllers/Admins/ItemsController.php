@@ -2,26 +2,24 @@
 
 namespace App\Http\Controllers\Admins;
 
-use App\Http\Controllers\Controller;
 use App\Models\Items;
-use App\Traits\UploadPhoto;
 
+
+
+use App\Traits\ItemRules;
+use App\Traits\UploadPhoto;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class ItemsController extends Controller
 {
     use UploadPhoto;
+    use ItemRules;
     
     public function addItem(Request $request , $id){
 
-        $rules=[
-            'name'        => 'required|string|min:4|max:25',
-            'description' => 'required|string|min:4|max:100',
-            'status'      => 'required|numeric',
-            'price'       => 'required|string',
-            'photo'       => 'required|image|mimes:jpg,jpeg,gif,png|max:14048',
-        ];
+        $rules=$this->ItemRules();
 
         $validator=Validator::make($request->all(),$rules);
 
@@ -59,4 +57,29 @@ class ItemsController extends Controller
         $items=Items::find($id);
         return response()->json(compact('items'));
     }
+
+    public function updateItem(Request $request,$id){
+        $rules=$this->ItemRules();
+
+        $validator=Validator::make($request->all(),$rules);
+
+        if($validator->fails()){
+            return response()->json(['error at validation'] , 400);
+        }
+
+        $fileName=$this->UploadPhoto($request->file('photo') , 'images/items');
+
+        $items=Items::find($id);
+
+        $items->name        = $request->name;
+        $items->description = $request->description;
+        $items->status      = $request->status;
+        $items->price       = $request->price;
+        $items->photo       = $fileName;
+
+        $items->save();
+        
+        return response()->json(compact('items'));
+    }
+
 }

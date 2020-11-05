@@ -41,3 +41,17 @@ export const edititems = async (id) => {
             console.log(err);
         });
 };
+
+export const updateitems = async (id,formData) => {
+    return await axios
+        .post(url + "update/items/"+id ,formData, {
+            headers: token
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+

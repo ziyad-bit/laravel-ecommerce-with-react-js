@@ -9,10 +9,8 @@ class Navbar extends Component {
     }
     render() {
 
-        const Navbar=<nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-            Navbar
-        </a>
+        const Navbar=<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        
         <button
             class="navbar-toggler"
             type="button"
@@ -31,7 +29,7 @@ class Navbar extends Component {
                         Home <span class="sr-only">(current)</span>
                     </Link>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item ">
                     <Link class="nav-link" to="/getitem">
                         Items 
                     </Link>
