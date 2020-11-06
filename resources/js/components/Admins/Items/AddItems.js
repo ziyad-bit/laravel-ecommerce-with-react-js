@@ -189,7 +189,13 @@ class AddItems extends Component {
                     status     : "",
                     price      : "",
                 });
+                
+            }else{
+                this.setState({
+                    success    : "",
+                });
             }
+
         });
     };
 
@@ -201,8 +207,8 @@ class AddItems extends Component {
             <div>
                 {this.state.success ? success : null}
                 <div
-                    className = "card text-white bg-dark mb-3 card_login"
-                    style     = {{ maxWidth: "18rem" }}
+                    className = "card text-white bg-info mb-3 card_login"
+                    style     = {{ maxWidth: "22rem" }}
                 >
                     <div className="card-header">add item</div>
                     <div className="card-body">
@@ -284,10 +290,18 @@ class AddItems extends Component {
                                     name      = "photo"
                                     onChange  = {this.changeStatePhoto}
                                 />
-                                
+                                <small style={{ color: "red" }}>
+                                    {this.state.photoRequired}
+                                </small>
+                                <small style={{ color: "red" }}>
+                                    {this.state.photoType}
+                                </small>
+                                <small style={{ color: "red" }}>
+                                    {this.state.photoSize}
+                                </small>
                             </div>
 
-                            <button type="submit" className="btn btn-primary">
+                            <button type="submit" className="btn btn-success">
                                 add
                             </button>
                         </form>

@@ -34,4 +34,5 @@ Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['ad
     Route::get('get/items'            , 'ItemsController@getItem');
     Route::get('edit/items/{id}'      , 'ItemsController@editItem');
     Route::post('update/items/{id}'    , 'ItemsController@updateItem');
+    Route::delete('delete/items/{id}'    , 'ItemsController@deleteItem');
 });

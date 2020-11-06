@@ -18,7 +18,20 @@ export const additems = async (admins_id, formData) => {
 
 export const getitems = async () => {
     return await axios
-        .get(url + "get/items/" , {
+        .get(url + "get/items" , {
+            headers: token
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+export const handlePage = async (pageNumber) => {
+    return await axios
+        .get(url + "get/items?page="+pageNumber , {
             headers: token
         })
         .then(res => {
@@ -45,6 +58,19 @@ export const edititems = async (id) => {
 export const updateitems = async (id,formData) => {
     return await axios
         .post(url + "update/items/"+id ,formData, {
+            headers: token
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+export const deleteitems = async (id) => {
+    return await axios
+        .delete(url + "delete/items/"+id , {
             headers: token
         })
         .then(res => {

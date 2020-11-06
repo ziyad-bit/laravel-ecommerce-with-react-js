@@ -1,19 +1,39 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { getitems, deleteitems } from "./functions";
-import '../../../../css/admins/items.css'
+import { deleteitems, getitems, handlePage } from "./functions";
+import Pagination from "react-js-pagination";
+import "../../../../css/admins/items.css";
 
 class GetItems extends Component {
     state = {
-        items: []
+        items             : [],
+        activePage        : 1,
+        itemsCountPerPage : 1,
+        totalItemsCount   : 1,
+        pageRangeDisplayed: 3
     };
 
     componentDidMount() {
         getitems().then(res => {
             this.setState({
-                items: res.data.items
+                items            : res.data.items.data,
+                activePage       : res.data.items.current_page,
+                itemsCountPerPage: res.data.items.per_page,
+                totalItemsCount  : res.data.items.total,
             });
         });
+    }
+
+    handlePageChange(pageNumber) {
+        console.log(`active page is ${pageNumber}`);
+        handlePage(pageNumber).then(res=>{
+            this.setState({
+                items            : res.data.items.data,
+                activePage       : res.data.items.current_page,
+                itemsCountPerPage: res.data.items.per_page,
+                totalItemsCount  : res.data.items.total,
+            })
+        })
     }
 
     delete = id => {
@@ -39,7 +59,7 @@ class GetItems extends Component {
                 <table class="table table-striped">
                     <thead className="bg-info">
                         <tr>
-                            <th scope="col">#</th>
+                            <th scope="col">item number</th>
                             <th scope="col">name</th>
                             <th scope="col">description</th>
                             <th scope="col">status</th>
@@ -50,7 +70,7 @@ class GetItems extends Component {
                         {this.state.items.map(item => {
                             return (
                                 <tr key={item.id}>
-                                    <th scope="row">1</th>
+                                    <th scope="row">{item.id}</th>
                                     <td>{item.name}</td>
                                     <td>{item.description}</td>
                                     <td>
@@ -68,13 +88,27 @@ class GetItems extends Component {
                                         >
                                             edit item
                                         </Link>
-                                    
+                                        <button
+                                            className="btn btn-danger delete_btn"
+                                            onClick={() => this.delete(item.id)}
+                                        >
+                                            delete
+                                        </button>
                                     </td>
                                 </tr>
                             );
                         })}
                     </tbody>
                 </table>
+                <Pagination
+                    activePage={this.state.activePage}
+                    itemsCountPerPage={this.state.itemsCountPerPage}
+                    totalItemsCount={this.state.totalItemsCount}
+                    pageRangeDisplayed={3}
+                    onChange={this.handlePageChange.bind(this)}
+                    itemClass='page-item'
+                    linkClass='page-link'
+                />
             </div>
         );
     }
