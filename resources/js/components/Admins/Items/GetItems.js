@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { deleteitems, getitems, handlePage } from "./functions";
 import Pagination from "react-js-pagination";
 import "../../../../css/admins/items.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class GetItems extends Component {
     state = {
@@ -54,6 +55,7 @@ class GetItems extends Component {
         return (
             <div>
                 <Link className="btn btn-info add_btn" to="/add/item">
+                    <FontAwesomeIcon icon='plus-square' className='icon'/>
                     Add item
                 </Link>
                 <table class="table table-striped">
@@ -86,12 +88,16 @@ class GetItems extends Component {
                                             className="btn btn-info"
                                             to={"/edit/item/" + item.id}
                                         >
+                                            <FontAwesomeIcon icon='edit' className='icon'/>
                                             edit item
                                         </Link>
+
                                         <button
+                                        
                                             className="btn btn-danger delete_btn"
                                             onClick={() => this.delete(item.id)}
                                         >
+                                            <FontAwesomeIcon icon='trash' className='icon'/>
                                             delete
                                         </button>
                                     </td>
@@ -100,15 +106,17 @@ class GetItems extends Component {
                         })}
                     </tbody>
                 </table>
-                <Pagination
-                    activePage={this.state.activePage}
-                    itemsCountPerPage={this.state.itemsCountPerPage}
-                    totalItemsCount={this.state.totalItemsCount}
-                    pageRangeDisplayed={3}
-                    onChange={this.handlePageChange.bind(this)}
-                    itemClass='page-item'
-                    linkClass='page-link'
-                />
+                <div className='d-flex justify-content-center'>
+                    <Pagination
+                        activePage={this.state.activePage}
+                        itemsCountPerPage={this.state.itemsCountPerPage}
+                        totalItemsCount={this.state.totalItemsCount}
+                        pageRangeDisplayed={3}
+                        onChange={this.handlePageChange.bind(this)}
+                        itemClass="page-item"
+                        linkClass="page-link"
+                    />
+                </div>
             </div>
         );
     }
