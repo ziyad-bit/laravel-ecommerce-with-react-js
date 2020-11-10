@@ -38,6 +38,13 @@ class Navbar extends Component {
                         Items 
                     </Link>
                 </li>
+                <li class="nav-item ">
+                
+                    <Link class="nav-link" to="/get/users">
+                    <FontAwesomeIcon icon='briefcase' className='icon'/>
+                        Members 
+                    </Link>
+                </li>
                 
                 <li class="nav-item">
                     <a
