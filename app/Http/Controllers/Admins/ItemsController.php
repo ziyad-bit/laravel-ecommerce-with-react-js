@@ -66,7 +66,7 @@ class ItemsController extends Controller
         if($validator->fails()){
             return response()->json(['error at validation'] , 400);
         }
-
+        
         $fileName=$this->UploadPhoto($request->file('photo') , 'images/items');
 
         $items=Items::find($id);

@@ -106,13 +106,13 @@ class GetUsers extends Component {
                 </table>
                 <div className='d-flex justify-content-center'>
                     <Pagination
-                        activePage={this.state.activePage}
-                        itemsCountPerPage={this.state.itemsCountPerPage}
-                        totalItemsCount={this.state.totalItemsCount}
-                        pageRangeDisplayed={3}
-                        onChange={this.handlePageChange.bind(this)}
-                        itemClass="page-item"
-                        linkClass="page-link"
+                        activePage         = {this.state.activePage}
+                        itemsCountPerPage  = {this.state.itemsCountPerPage}
+                        totalItemsCount    = {this.state.totalItemsCount}
+                        pageRangeDisplayed = {3}
+                        onChange           = {this.handlePageChange.bind(this)}
+                        itemClass          = "page-item"
+                        linkClass          = "page-link"
                     />
                 </div>
             </div>

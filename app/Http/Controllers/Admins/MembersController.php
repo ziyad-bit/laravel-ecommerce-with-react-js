@@ -58,4 +58,36 @@ class MembersController extends Controller
         $users=Users::find($id);
         $users->delete();
     }
+
+    public function editUser($id){
+        $users=Users::find($id);
+        return response()->json(compact('users'));
+    }
+
+    public function updateUser(Request $request,$id){
+        $users=Users::find($id);
+        $photo=$request->file('photo');
+        $rules=$this->MembersRules($photo,$users);
+
+        $validator=Validator::make($request->all(),$rules);
+
+        if($validator->fails()){
+            return response()->json(['error at validation'] , 400);
+        }
+
+        $fileName='';
+        if($photo){
+            $fileName=$this->UploadPhoto($photo , 'images/users');
+        }
+        
+
+        $users->name     = $request->name;
+        $users->email    = $request->email;
+        $users->password = $request->password;
+        $users->photo    = $fileName;
+
+        $users->save();
+        
+        return response()->json(compact('users'));
+    }
 }

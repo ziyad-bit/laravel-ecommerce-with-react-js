@@ -54,3 +54,29 @@ export const deleteUsers = async (id) => {
             console.log(err);
         });
 };
+
+export const editUser = async (id) => {
+    return await axios
+        .get(url + "edit/users/"+id , {
+            headers: token
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+export const updateUser = async (id,formData) => {
+    return await axios
+        .post(url + "update/users/"+id ,formData, {
+            headers: token
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};

@@ -40,8 +40,21 @@ Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['ad
 ###################       users        ######################
 
 Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['adminsRoutes' , 'jwt.auth'] ], function () {
-    Route::post('add/users', 'MembersController@addUser');
-    Route::get('get/users', 'MembersController@getUser');
+    Route::post('add/users'             , 'MembersController@addUser');
+    Route::get('get/users'              , 'MembersController@getUser');
     Route::delete('delete/users/{id}'   , 'MembersController@deleteUser');
+    Route::get('edit/users/{id}'        , 'MembersController@editUser');
+    Route::post('update/users/{id}'     , 'MembersController@updateUser');
+    
+});
+
+###################       category        ######################
+
+Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['adminsRoutes' , 'jwt.auth'] ], function () {
+    Route::post('add/category'             , 'CategoryController@addCategory');
+    Route::get('get/users'              , 'MembersController@getUser');
+    Route::delete('delete/users/{id}'   , 'MembersController@deleteUser');
+    Route::get('edit/users/{id}'        , 'MembersController@editUser');
+    Route::post('update/users/{id}'     , 'MembersController@updateUser');
     
 });
