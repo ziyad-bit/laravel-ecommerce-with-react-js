@@ -1,27 +1,23 @@
 import React, { Component } from "react";
 
-import {  addusers } from "./functions";
+import {  addAdmins } from "./functions";
 
-class AddUsers extends Component {
+class AddAdmins extends Component {
     state = {
         //inputs
         name    : "",
         email   : "",
         password: "",
-        photo   : "",
 
         //validation
         nameRequired    : "",
         emailRequired   : "",
-        statusRequired  : "",
+        emailUnique     : "",
         passwordRequired: "",
-        photoRequired   : "",
-        photoType       : "",
-        photoSize       : "",
         success         : ""
     };
 
-    inputRef = React.createRef();
+    
 
     validateName = () => {
         let nameRequired = "";
@@ -71,52 +67,9 @@ class AddUsers extends Component {
         }
     };
 
-    validatephoto = () => {
-        if (this.state.photo) {
-            let photoType = "";
-            if (
-                this.state.photo.type !== "image/jpg" &&
-                this.state.photo.type !== "image/jpeg"&&
-                this.state.photo.type !== "image/png" &&
-                this.state.photo.type !== "image/gif"
-            ) {
-                photoType = "invalid image";
-            }
-            if (photoType) {
-                this.setState({
-                    photoType
-                });
-            } else {
-                this.setState({
-                    photoType: ""
-                });
-            }
-
-            let photoSize = "";
-            if (this.state.photo.size > 14048) {
-                photoSize = "maximum size should be less than 14 MB";
-            }
-            if (photoSize) {
-                this.setState({
-                    photoSize
-                });
-            } else {
-                this.setState({
-                    photoSize: ""
-                });
-            }
-        }
-    };
-
     changeState = e => {
         this.setState({
             [e.target.name]: e.target.value
-        });
-    };
-
-    changeStatePhoto = e => {
-        this.setState({
-            photo: e.target.files[0]
         });
     };
 
@@ -126,28 +79,30 @@ class AddUsers extends Component {
         this.validateName();
         this.validateemail();
         this.validatepassword();
-        this.validatephoto();
 
         const formData = new FormData();
         formData.append("name"    , this.state.name);
         formData.append("email"   , this.state.email);
         formData.append("password", this.state.password);
-        formData.append("photo"   , this.state.photo);
 
-        addusers(formData).then(res => {
+        addAdmins(formData)
+        .then(res => {
             if (res) {
-                this.inputRef.current.value = "";
+                
                 this.setState({
-                    success : "you add user successfully",
-                    name    : "",
-                    email   : "",
-                    password: ""
-                });
-            } else {
-                this.setState({
-                    success: ""
+                    success    : "you created category successfully",
+                    name       : "",
+                    email      : "",
+                    password   : '',
+                    emailUnique: ""
                 });
             }
+        })
+        .catch(err => {
+            this.setState({
+                emailUnique: res.response.data.email_unique,
+                success    : ""
+            });
         });
     };
 
@@ -162,11 +117,11 @@ class AddUsers extends Component {
                     className="card text-white bg-info mb-3 card_login"
                     style={{ maxWidth: "22rem" }}
                 >
-                    <div className="card-header">add item</div>
+                    <div className="card-header">add admins</div>
                     <div className="card-body">
                         <form onSubmit={this.submitState}>
                             <div className="form-group">
-                                <label htmlFor="exampleInputname1">name</label>
+                                <label >name</label>
                                 <input
                                     type      = "text"
                                     className = "form-control"
@@ -179,13 +134,12 @@ class AddUsers extends Component {
                                 </small>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="exampleInputemail1">
+                                <label >
                                     email
                                 </label>
                                 <input
                                     type      = "email"
                                     className = "form-control"
-                                    id        = "exampleInputemail1"
                                     name      = "email"
                                     value     = {this.state.email}
                                     onChange  = {this.changeState}
@@ -193,44 +147,24 @@ class AddUsers extends Component {
                                 <small style={{ color: "red" }}>
                                     {this.state.emailRequired}
                                 </small>
+                                <small style={{ color: "red" }}>
+                                    {this.state.emailUnique}
+                                </small>
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="exampleInputemail1">
+                                <label >
                                     password
                                 </label>
                                 <input
                                     type      = "password"
-                                    className = "form-control"
-                                    id        = "exampleInputemail1"
+                                    className = "form-control"                                    
                                     name      = "password"
                                     value     = {this.state.password}
                                     onChange  = {this.changeState}
                                 />
                                 <small style={{ color: "red" }}>
                                     {this.state.passwordRequired}
-                                </small>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="exampleInputemail1">
-                                    photo
-                                </label>
-                                <input
-                                    ref       = {this.inputRef}
-                                    type      = "file"
-                                    className = "form-control"
-                                    id        = "exampleInputemail1"
-                                    name      = "photo"
-                                    onChange  = {this.changeStatePhoto}
-                                />
-                                <small style={{ color: "red" }}>
-                                    {this.state.photoRequired}
-                                </small>
-                                <small style={{ color: "red" }}>
-                                    {this.state.photoType}
-                                </small>
-                                <small style={{ color: "red" }}>
-                                    {this.state.photoSize}
                                 </small>
                             </div>
 
@@ -245,4 +179,4 @@ class AddUsers extends Component {
     }
 }
 
-export default AddUsers;
+export default AddAdmins;

@@ -11,6 +11,7 @@ class AddCategory extends Component {
 
         //validation
         nameRequired       : "",
+        nameUnique         : '',
         descriptionRequired: "",
         photoRequired      : "",
         photoType          : "",
@@ -122,30 +123,30 @@ class AddCategory extends Component {
         this.validateName();
         this.validatedescription();
         this.validatephoto();
-        
-
 
         const formData = new FormData();
         formData.append("name"       , this.state.name);
         formData.append("description", this.state.description);
         formData.append("photo"      , this.state.photo);
 
-        addCategories( formData).then(res => {
-            if (res) {
-                this.inputRef.current.value=''
+        addCategories(formData)
+            .then(res => {
+                if (res) {
+                    this.inputRef.current.value = "";
+                    this.setState({
+                        success    : "you created category successfully",
+                        name       : "",
+                        description: "",
+                        nameUnique : ""
+                    });
+                }
+            })
+            .catch(err => {
                 this.setState({
-                    success    : "you created item successfully",
-                    name       : "",
-                    description: "",
+                    nameUnique: err.response.data.name_unique,
+                    success   : ""
                 });
-                
-            }else{
-                this.setState({
-                    success    : "",
-                });
-            }
-
-        });
+            });
     };
 
     render() {
@@ -173,6 +174,9 @@ class AddCategory extends Component {
                                 />
                                 <small style={{ color: "red" }}>
                                     {this.state.nameRequired}
+                                </small>
+                                <small style={{ color: "red" }}>
+                                    {this.state.nameUnique}
                                 </small>
                             </div>
                             <div className="form-group">

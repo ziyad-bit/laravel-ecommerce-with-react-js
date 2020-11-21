@@ -16,6 +16,18 @@ class MembersController extends Controller
     use MembersRules;
 
     public function addUser(Request $request ){
+        $emailUniqueRule=[
+            'email'=>'unique:users'
+        ];
+        $error=[
+            'email_unique'=>'this email is used'
+        ];
+        
+        $validator=Validator::make($request->only('email'),$emailUniqueRule);
+
+        if($validator->fails()){
+            return response()->json(['error at validation'] , 400);
+        }
 
         //import from trait(MembersRules)
         $rules=$this->MembersRules($request);
@@ -32,8 +44,6 @@ class MembersController extends Controller
             $fileName=$this->UploadPhoto($request->file('photo') , 'images/items');
         }
         
-        
-
         $users=Users::create([
             'name'     => $request->get('name'),
             'email'    => $request->get('email'),
@@ -44,7 +54,6 @@ class MembersController extends Controller
         ]
         
         );
-
 
         return response()->json(compact('users'));
     }
@@ -65,9 +74,9 @@ class MembersController extends Controller
     }
 
     public function updateUser(Request $request,$id){
-        $users=Users::find($id);
+        
         $photo=$request->file('photo');
-        $rules=$this->MembersRules($photo,$users);
+        $rules=$this->MembersRules($photo,$id);
 
         $validator=Validator::make($request->all(),$rules);
 
@@ -80,7 +89,7 @@ class MembersController extends Controller
             $fileName=$this->UploadPhoto($photo , 'images/users');
         }
         
-
+        $users=Users::find($id);
         $users->name     = $request->name;
         $users->email    = $request->email;
         $users->password = $request->password;

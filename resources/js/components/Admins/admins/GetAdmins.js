@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { deleteitems, getitems, handlePage } from "./functions";
+import { deleteAdmins, getAdmin, handlePage } from "./functions";
 import Pagination from "react-js-pagination";
 import "../../../../css/admins/items.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-class GetItems extends Component {
+class GetAdmins extends Component {
     state = {
-        items             : [],
+        admins             : [],
         activePage        : 1,
         itemsCountPerPage : 1,
         totalItemsCount   : 1,
@@ -15,12 +15,12 @@ class GetItems extends Component {
     };
 
     componentDidMount() {
-        getitems().then(res => {
+        getAdmin().then(res => {
             this.setState({
-                items            : res.data.items.data,
-                activePage       : res.data.items.current_page,
-                itemsCountPerPage: res.data.items.per_page,
-                totalItemsCount  : res.data.items.total,
+                admins            : res.data.admins.data,
+                activePage       : res.data.admins.current_page,
+                itemsCountPerPage: res.data.admins.per_page,
+                totalItemsCount  : res.data.admins.total,
             });
         });
     }
@@ -29,22 +29,22 @@ class GetItems extends Component {
         console.log(`active page is ${pageNumber}`);
         handlePage(pageNumber).then(res=>{
             this.setState({
-                items            : res.data.items.data,
-                activePage       : res.data.items.current_page,
-                itemsCountPerPage: res.data.items.per_page,
-                totalItemsCount  : res.data.items.total,
+                admins            : res.data.admins.data,
+                activePage       : res.data.admins.current_page,
+                itemsCountPerPage: res.data.admins.per_page,
+                totalItemsCount  : res.data.admins.total,
             })
         })
     }
 
     delete = id => {
-        deleteitems(id).then(res => {
-            let items = this.state.items;
-            for (let index = 0; index < items.length; index++) {
-                if (items[index].id == id) {
-                    items.splice(index, 1);
+        deleteAdmins(id).then(res => {
+            let admins = this.state.admins;
+            for (let index = 0; index < admins.length; index++) {
+                if (admins[index].id == id) {
+                    admins.splice(index, 1);
                     this.setState({
-                        items
+                        admins
                     });
                 }
             }
@@ -54,50 +54,48 @@ class GetItems extends Component {
     render() {
         return (
             <div>
-                <Link className="btn btn-info add_btn" to="/add/item">
+                <Link className="btn btn-info add_btn" to="/add/admins">
                     <FontAwesomeIcon icon='plus-square' className='icon'/>
-                    Add item
+                    Add admins
                 </Link>
                 <table class="table table-striped">
                     <thead className="bg-info">
                         <tr>
-                            <th scope="col">item number</th>
+                            <th scope="col">admin ID</th>
                             <th scope="col">name</th>
-                            <th scope="col">description</th>
-                            <th scope="col">status</th>
+                            <th scope="col">email</th>
+                            <th scope="col">date</th>
                             <th scope="col">control</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.items.map(item => {
+                        {this.state.admins.map(admin => {
                             return (
-                                <tr key={item.id}>
-                                    <th scope="row">{item.id}</th>
-                                    <td>{item.name}</td>
-                                    <td>{item.description}</td>
-                                    <td>
-                                        {item.status == 1 ? (
-                                            <span>new</span>
-                                        ) : null}
-                                        {item.status == 2 ? (
-                                            <span>used</span>
-                                        ) : null}
-                                    </td>
+                                <tr key={admin.id}>
+                                    <th scope="row">{admin.id}</th>
+                                    <td>{admin.name}</td>
+                                    <td>{admin.email}</td>
+                                    <td>{admin.date}</td>
                                     <td>
                                         <Link
                                             className="btn btn-info"
-                                            to={"/edit/item/" + item.id}
+                                            to={"/edit/admins/" + admin.id}
                                         >
-                                            <FontAwesomeIcon icon='edit' className='icon'/>
-                                            edit item
+                                            <FontAwesomeIcon
+                                                icon="edit"
+                                                className="icon"
+                                            />
+                                            edit admin
                                         </Link>
 
                                         <button
-                                        
                                             className="btn btn-danger delete_btn"
-                                            onClick={() => this.delete(item.id)}
+                                            onClick={() => this.delete(admin.id)}
                                         >
-                                            <FontAwesomeIcon icon='trash' className='icon'/>
+                                            <FontAwesomeIcon
+                                                icon="trash"
+                                                className="icon"
+                                            />
                                             delete
                                         </button>
                                     </td>
@@ -122,4 +120,4 @@ class GetItems extends Component {
     }
 }
 
-export default GetItems;
+export default GetAdmins;

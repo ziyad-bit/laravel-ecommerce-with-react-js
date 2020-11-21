@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { deleteitems, getitems, handlePage } from "./functions";
+import { deleteCategories, getCategories, handlePage } from "./functions";
 import Pagination from "react-js-pagination";
-import "../../../../css/admins/items.css";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-class GetItems extends Component {
+class GetCategory extends Component {
     state = {
-        items             : [],
+        categories        : [],
         activePage        : 1,
         itemsCountPerPage : 1,
         totalItemsCount   : 1,
@@ -15,12 +15,12 @@ class GetItems extends Component {
     };
 
     componentDidMount() {
-        getitems().then(res => {
+        getCategories().then(res => {
             this.setState({
-                items            : res.data.items.data,
-                activePage       : res.data.items.current_page,
-                itemsCountPerPage: res.data.items.per_page,
-                totalItemsCount  : res.data.items.total,
+                categories            : res.data.categories.data,
+                activePage       : res.data.categories.current_page,
+                itemsCountPerPage: res.data.categories.per_page,
+                totalItemsCount  : res.data.categories.total,
             });
         });
     }
@@ -29,22 +29,22 @@ class GetItems extends Component {
         console.log(`active page is ${pageNumber}`);
         handlePage(pageNumber).then(res=>{
             this.setState({
-                items            : res.data.items.data,
-                activePage       : res.data.items.current_page,
-                itemsCountPerPage: res.data.items.per_page,
-                totalItemsCount  : res.data.items.total,
+                categories            : res.data.categories.data,
+                activePage       : res.data.categories.current_page,
+                itemsCountPerPage: res.data.categories.per_page,
+                totalItemsCount  : res.data.categories.total,
             })
         })
     }
 
     delete = id => {
-        deleteitems(id).then(res => {
-            let items = this.state.items;
-            for (let index = 0; index < items.length; index++) {
-                if (items[index].id == id) {
-                    items.splice(index, 1);
+        deleteCategories(id).then(res => {
+            let categories = this.state.categories;
+            for (let index = 0; index < categories.length; index++) {
+                if (categories[index].id == id) {
+                    categories.splice(index, 1);
                     this.setState({
-                        items
+                        categories
                     });
                 }
             }
@@ -54,48 +54,47 @@ class GetItems extends Component {
     render() {
         return (
             <div>
-                <Link className="btn btn-info add_btn" to="/add/item">
+                <Link className="btn btn-info add_btn" to="/add/category">
                     <FontAwesomeIcon icon='plus-square' className='icon'/>
-                    Add item
+                    Add category
                 </Link>
                 <table class="table table-striped">
                     <thead className="bg-info">
                         <tr>
-                            <th scope="col">item number</th>
+                            <th scope="col">category number</th>
                             <th scope="col">name</th>
                             <th scope="col">description</th>
-                            <th scope="col">status</th>
                             <th scope="col">control</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.items.map(item => {
+                        {this.state.categories.map(category => {
                             return (
-                                <tr key={item.id}>
-                                    <th scope="row">{item.id}</th>
-                                    <td>{item.name}</td>
-                                    <td>{item.description}</td>
-                                    <td>
-                                        {item.status == 1 ? (
-                                            <span>new</span>
-                                        ) : null}
-                                        {item.status == 2 ? (
-                                            <span>used</span>
-                                        ) : null}
-                                    </td>
+                                <tr key={category.id}>
+                                    <th scope="row">{category.id}</th>
+                                    <td>{category.name}</td>
+                                    <td>{category.description}</td>
+                                    
                                     <td>
                                         <Link
                                             className="btn btn-info"
-                                            to={"/edit/item/" + item.id}
+                                            to={"/edit/category/" + category.id}
                                         >
                                             <FontAwesomeIcon icon='edit' className='icon'/>
-                                            edit item
+                                            edit category
                                         </Link>
 
+                                        <Link
+                                            className="btn btn-info"
+                                            to={"/edit/photo/" + category.id}
+                                        >
+                                            <FontAwesomeIcon icon='edit' className='icon'/>
+                                            edit photo
+                                        </Link>
                                         <button
                                         
                                             className="btn btn-danger delete_btn"
-                                            onClick={() => this.delete(item.id)}
+                                            onClick={() => this.delete(category.id)}
                                         >
                                             <FontAwesomeIcon icon='trash' className='icon'/>
                                             delete
@@ -122,4 +121,4 @@ class GetItems extends Component {
     }
 }
 
-export default GetItems;
+export default GetCategory;

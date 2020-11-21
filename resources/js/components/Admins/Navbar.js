@@ -41,10 +41,24 @@ class Navbar extends Component {
                 <li class="nav-item ">
                 
                     <Link class="nav-link" to="/get/users">
-                    <FontAwesomeIcon icon='briefcase' className='icon'/>
+                    <FontAwesomeIcon icon='users' className='icon'/>
                         Members 
                     </Link>
                 </li>
+                <li class="nav-item ">
+                
+                <Link class="nav-link" to="/get/admins">
+                <FontAwesomeIcon icon='user-tie' className='icon'/>
+                    admins 
+                </Link>
+            </li>
+                <li class="nav-item ">
+                
+                <Link class="nav-link" to="/get/category">
+                <FontAwesomeIcon icon='border-all' className='icon'/>
+                    categories 
+                </Link>
+            </li>
                 
                 <li class="nav-item">
                     <a

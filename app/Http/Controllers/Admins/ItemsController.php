@@ -41,7 +41,6 @@ class ItemsController extends Controller
             'photo'       => $fileName,
             'admins_id'   => $id
         ]
-        
         );
 
 

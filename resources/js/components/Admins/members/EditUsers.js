@@ -1,38 +1,34 @@
 import React, { Component } from "react";
 
-import {  editUser, EditUser,updateUser } from "./functions";
+import {  editUser,updateUser } from "./functions";
 
 class EditUsers extends Component {
     state = {
         //inputs
-        name: "",
-        email: "",
+        name    : "",
+        email   : "",
         password: "",
-        photo: "",
+        photo   : "",
 
         //validation
-        nameRequired: "",
-        emailRequired: "",
-        statusRequired: "",
+        nameRequired    : "",
+        emailRequired   : "",
+        statusRequired  : "",
         passwordRequired: "",
-        photoRequired: "",
-        photoType: "",
-        photoSize: "",
-        success: ""
+        photoRequired   : "",
+        photoType       : "",
+        photoSize       : "",
+        success         : ""
     };
 
-    componentDidMount(){
-        const id=this.props.match.params.id
-        editUser(id).then(res=>{
-            
+    componentDidMount() {
+        const id = this.props.match.params.id;
+        editUser(id).then(res => {
             this.setState({
-                name    : res.data.users.name,
-                email   :  res.data.users.email,
-                
-            })
-
-            
-        })
+                name : res.data.users.name,
+                email: res.data.users.email
+            });
+        });
     }
     inputRef = React.createRef();
 
@@ -142,19 +138,19 @@ class EditUsers extends Component {
         this.validatephoto();
 
         const formData = new FormData();
-        formData.append("name", this.state.name);
-        formData.append("email", this.state.email);
+        formData.append("name"    , this.state.name);
+        formData.append("email"   , this.state.email);
         formData.append("password", this.state.password);
-        formData.append("photo", this.state.photo);
+        formData.append("photo"   , this.state.photo);
 
-        const id=this.props.match.params.id
-        updateUser(id,formData).then(res => {
+        const id = this.props.match.params.id;
+        updateUser(id, formData).then(res => {
             if (res) {
                 this.inputRef.current.value = "";
                 this.setState({
-                    success: "you add user successfully",
-                    name: "",
-                    email: "",
+                    success : "you add user successfully",
+                    name    : "",
+                    email   : "",
                     password: ""
                 });
             } else {
@@ -182,11 +178,11 @@ class EditUsers extends Component {
                             <div className="form-group">
                                 <label htmlFor="exampleInputname1">name</label>
                                 <input
-                                    type="text"
-                                    className="form-control"
-                                    name="name"
-                                    value={this.state.name}
-                                    onChange={this.changeState}
+                                    type      = "text"
+                                    className = "form-control"
+                                    name      = "name"
+                                    value     = {this.state.name}
+                                    onChange  = {this.changeState}
                                 />
                                 <small style={{ color: "red" }}>
                                     {this.state.nameRequired}
@@ -197,12 +193,12 @@ class EditUsers extends Component {
                                     email
                                 </label>
                                 <input
-                                    type="email"
-                                    className="form-control"
-                                    id="exampleInputemail1"
-                                    name="email"
-                                    value={this.state.email}
-                                    onChange={this.changeState}
+                                    type      = "email"
+                                    className = "form-control"
+                                    id        = "exampleInputemail1"
+                                    name      = "email"
+                                    value     = {this.state.email}
+                                    onChange  = {this.changeState}
                                 />
                                 <small style={{ color: "red" }}>
                                     {this.state.emailRequired}
@@ -214,12 +210,12 @@ class EditUsers extends Component {
                                     password
                                 </label>
                                 <input
-                                    type="password"
-                                    className="form-control"
-                                    id="exampleInputemail1"
-                                    name="password"
-                                    value={this.state.password}
-                                    onChange={this.changeState}
+                                    type      = "password"
+                                    className = "form-control"
+                                    id        = "exampleInputemail1"
+                                    name      = "password"
+                                    value     = {this.state.password}
+                                    onChange  = {this.changeState}
                                 />
                                 <small style={{ color: "red" }}>
                                     {this.state.passwordRequired}
@@ -230,12 +226,12 @@ class EditUsers extends Component {
                                     photo
                                 </label>
                                 <input
-                                    ref={this.inputRef}
-                                    type="file"
-                                    className="form-control"
-                                    id="exampleInputemail1"
-                                    name="photo"
-                                    onChange={this.changeStatePhoto}
+                                    ref       = {this.inputRef}
+                                    type      = "file"
+                                    className = "form-control"
+                                    id        = "exampleInputemail1"
+                                    name      = "photo"
+                                    onChange  = {this.changeStatePhoto}
                                 />
                                 <small style={{ color: "red" }}>
                                     {this.state.photoRequired}
