@@ -13,12 +13,26 @@ export const addusers = async ( formData) => {
         })
         .catch(err => {
             console.log(err);
+            throw err
         });
 };
 
 export const getUser = async () => {
     return await axios
         .get(url + "get/users" , {
+            headers: token
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+export const getUserCount = async () => {
+    return await axios
+        .get(url + "get/users/count" , {
             headers: token
         })
         .then(res => {
@@ -78,5 +92,6 @@ export const updateUser = async (id,formData) => {
         })
         .catch(err => {
             console.log(err);
+            throw err
         });
 };

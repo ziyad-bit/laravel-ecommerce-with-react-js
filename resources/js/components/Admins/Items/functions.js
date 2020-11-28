@@ -29,6 +29,19 @@ export const getitems = async () => {
         });
 };
 
+export const getitemsCount = async () => {
+    return await axios
+        .get(url + "get/items/count" , {
+            headers: token
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 export const handlePage = async (pageNumber) => {
     return await axios
         .get(url + "get/items?page="+pageNumber , {

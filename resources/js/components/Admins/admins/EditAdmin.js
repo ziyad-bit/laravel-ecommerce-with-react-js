@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import { getauthadmin } from "../functions";
 
-import {  addAdmins } from "./functions";
+import {  updateAdmins } from "./functions";
 
-class AddAdmins extends Component {
+class EditAdmins extends Component {
     state = {
         //inputs
         name    : "",
@@ -17,7 +18,17 @@ class AddAdmins extends Component {
         success         : ""
     };
 
-    
+    componentDidMount(){
+        getauthadmin().then(res=>{
+            this.setState({
+                id:res.data.admin.id,
+                name:res.data.admin.name,
+                email:res.data.admin.email,
+            })
+        })
+
+        
+    }
 
     validateName = () => {
         let nameRequired = "";
@@ -84,8 +95,8 @@ class AddAdmins extends Component {
         formData.append("name"    , this.state.name);
         formData.append("email"   , this.state.email);
         formData.append("password", this.state.password);
-
-        addAdmins(formData)
+        const id=this.state.id
+        updateAdmins(id,formData)
         .then(res => {
             if (res) {
                 
@@ -117,7 +128,7 @@ class AddAdmins extends Component {
                     className="card text-white bg-info mb-3 card_login"
                     style={{ maxWidth: "22rem" }}
                 >
-                    <div className="card-header">add admins</div>
+                    <div className="card-header">edit admins</div>
                     <div className="card-body">
                         <form onSubmit={this.submitState}>
                             <div className="form-group">
@@ -169,7 +180,7 @@ class AddAdmins extends Component {
                             </div>
 
                             <button type="submit" className="btn btn-success">
-                                add
+                                update
                             </button>
                         </form>
                     </div>
@@ -179,4 +190,4 @@ class AddAdmins extends Component {
     }
 }
 
-export default AddAdmins;
+export default EditAdmins;

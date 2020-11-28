@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class GetAdmins extends Component {
     state = {
-        admins             : [],
+        admins            : [],
         activePage        : 1,
         itemsCountPerPage : 1,
         totalItemsCount   : 1,
@@ -29,7 +29,7 @@ class GetAdmins extends Component {
         console.log(`active page is ${pageNumber}`);
         handlePage(pageNumber).then(res=>{
             this.setState({
-                admins            : res.data.admins.data,
+                admins           : res.data.admins.data,
                 activePage       : res.data.admins.current_page,
                 itemsCountPerPage: res.data.admins.per_page,
                 totalItemsCount  : res.data.admins.total,
@@ -79,7 +79,7 @@ class GetAdmins extends Component {
                                     <td>
                                         <Link
                                             className="btn btn-info"
-                                            to={"/edit/admins/" + admin.id}
+                                            to={"/edit/admins"}
                                         >
                                             <FontAwesomeIcon
                                                 icon="edit"

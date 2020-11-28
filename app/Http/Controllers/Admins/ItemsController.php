@@ -39,7 +39,8 @@ class ItemsController extends Controller
             'date'        => now(),
             'approve'     => 1,
             'photo'       => $fileName,
-            'admins_id'   => $id
+            'admins_id'   => $id,
+            'category_id' => $request->get('category_id'),
         ]
         );
 
@@ -75,6 +76,8 @@ class ItemsController extends Controller
         $items->status      = $request->status;
         $items->price       = $request->price;
         $items->photo       = $fileName;
+        $items->category_id = $request->category_id;
+        
 
         $items->save();
         
@@ -85,4 +88,10 @@ class ItemsController extends Controller
         $items=Items::find($id);
         $items->delete();
     }
+
+    public function getCount(){
+		$items=Items::all();
+		$itemsCount=$items->count();
+		return response()->json(compact('itemsCount'));
+	}
 }

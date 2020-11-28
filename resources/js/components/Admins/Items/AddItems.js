@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { getauthadmin } from "../../Admins/functions";
 import { additems } from "./functions";
+import { getCategories } from "../category/functions";
+
 
 class AddItems extends Component {
     state = {
@@ -10,6 +12,8 @@ class AddItems extends Component {
         status     : "",
         price      : "",
         photo      : "",
+        category_id: '',
+        categories : [],
 
         //validation
         nameRequired       : "",
@@ -19,10 +23,16 @@ class AddItems extends Component {
         photoRequired      : "",
         photoType          : "",
         photoSize          : "",
+        categoryRequired   : '',
         success            : ""
     };
 
     componentDidMount() {
+        getCategories().then(res=>{
+            this.setState({
+                categories  : res.data.categories.data,
+            })
+        })
         getauthadmin().then(res => {
             this.setState({
                 admins_id: res.data.admin.id
@@ -44,6 +54,22 @@ class AddItems extends Component {
         } else {
             this.setState({
                 nameRequired: ""
+            });
+        }
+    };
+
+    validateCategory = () => {
+        let categoryRequired = "";
+        if (this.state.category_id.length < 1) {
+            categoryRequired = "you should select category";
+        }
+        if (categoryRequired) {
+            this.setState({
+                categoryRequired
+            });
+        } else {
+            this.setState({
+                categoryRequired: ""
             });
         }
     };
@@ -162,6 +188,7 @@ class AddItems extends Component {
     submitState = e => {
         e.preventDefault();
 
+        this.validateCategory();
         this.validateName();
         this.validatedescription();
         this.validatestatus();
@@ -171,11 +198,13 @@ class AddItems extends Component {
 
 
         const formData = new FormData();
-        formData.append("name"       , this.state.name);
-        formData.append("description", this.state.description);
-        formData.append("status"     , this.state.status);
-        formData.append("price"      , this.state.price);
-        formData.append("photo"      , this.state.photo);
+        formData.append("name"             , this.state.name);
+        formData.append("description"      , this.state.description);
+        formData.append("status"           , this.state.status);
+        formData.append("price"            , this.state.price);
+        formData.append("photo"            , this.state.photo);
+        formData.append("category_id"      , this.state.category_id);
+        
 
         const admins_id = this.state.admins_id;
 
@@ -262,6 +291,30 @@ class AddItems extends Component {
                                     {this.state.statusRequired}
                                 </small>
                             </div>
+                            <div className="form-group">
+                                <label htmlFor="exampleInputdescription1">
+                                    category
+                                </label>
+                                <select
+                                    type      = "text"
+                                    className = "form-control"
+                                    id        = "exampleInputdescription1"
+                                    name      = "category_id"
+                                    value     = {this.state.category_id}
+                                    onChange  = {this.changeState}
+                                >
+                                    {this.state.categories.map(category=>{
+                                        return(
+                                        <option value={category.id}>{category.name}</option>
+                                        ) 
+                                    })}
+                                    
+                                </select>
+                                <small style={{ color: "red" }}>
+                                    {this.state.categoryRequired}
+                                </small>
+                            </div>
+                            
                             <div className="form-group">
                                 <label htmlFor="exampleInputdescription1">
                                     price

@@ -103,5 +103,43 @@ public function addAdmins(Request $request ){
 	public function deleteAdmin($id){
         $admins=Admins::find($id);
         $admins->delete();
-    }
+	}
+	
+	public function updateAdmin(Request $request,$id){
+        $emailUniqueRule=[
+            'email'=>'unique:admins,email,'.$id
+        ];
+        $error=[
+            'email_unique'=>'this email is used'
+        ];
+        
+        $validator=Validator::make($request->only('email'),$emailUniqueRule);
+		if($validator->fails()){
+            return response()->json($error , 400);
+        }
+
+        
+        $rules=$this->MembersRules();
+
+        $validator=Validator::make($request->all(),$rules);
+
+        if($validator->fails()){
+            return response()->json(['error at validation'] , 400);
+        }
+
+        $admins=admins::find($id);
+        $admins->name     = $request->name;
+        $admins->email    = $request->email;
+        $admins->password = Hash::make($request->password);
+
+        $admins->save();
+        
+        return response()->json(compact('admins'));
+	}
+	
+	public function getCount(){
+		$admins=Admins::all();
+		$adminsCount=$admins->count();
+		return response()->json(compact('adminsCount'));
+	}
 }

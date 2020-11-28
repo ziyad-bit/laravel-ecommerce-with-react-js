@@ -10,6 +10,7 @@ trait ItemRules{
             'status'      => 'required|numeric',
             'price'       => 'required|string',
             'photo'       => 'required|image|mimes:jpg,jpeg,gif,png|max:14048',
+            'category_id'       => 'required|not_in:0',
         ];
         return $rules;
     }

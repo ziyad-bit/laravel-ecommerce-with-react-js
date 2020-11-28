@@ -50,7 +50,7 @@ class CategoryController extends Controller
     }
 
     public function getCategory(){
-        $categories=Category::orderBy('id','desc')->paginate(5);
+        $categories=Category::paginate(5);
         return response()->json(compact('categories'));
     }
 

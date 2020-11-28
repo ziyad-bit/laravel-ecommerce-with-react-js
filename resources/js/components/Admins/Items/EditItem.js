@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { getauthadmin } from "../../Admins/functions";
 import { updateitems, edititems } from "./functions";
+import { getCategories } from "../category/functions";
 
 class EditItems extends Component {
     state = {
@@ -10,6 +11,8 @@ class EditItems extends Component {
         status     : "",
         price      : "",
         photo      : "",
+        category_id: '',
+        categories : [],
 
         //validation
         nameRequired       : "",
@@ -19,10 +22,17 @@ class EditItems extends Component {
         photoRequired      : "",
         photoType          : "",
         photoSize          : "",
+        categoryRequired   : '',
         success            : ""
     };
 
     componentDidMount() {
+        getCategories().then(res=>{
+            this.setState({
+                categories  : res.data.categories.data,
+            })
+        })
+
         const id=this.props.match.params.id
         edititems(id).then(res=>{
             this.setState({
@@ -156,6 +166,22 @@ class EditItems extends Component {
         }
     };
 
+    validateCategory = () => {
+        let categoryRequired = "";
+        if (this.state.category_id.length < 1) {
+            categoryRequired = "you should select category";
+        }
+        if (categoryRequired) {
+            this.setState({
+                categoryRequired
+            });
+        } else {
+            this.setState({
+                categoryRequired: ""
+            });
+        }
+    };
+
     changeState = e => {
         this.setState({
             [e.target.name]: e.target.value
@@ -176,8 +202,8 @@ class EditItems extends Component {
         this.validatestatus();
         this.validateprice();
         this.validatephoto();
+        this.validateCategory();
         
-
 
         const formData = new FormData();
         formData.append("name"       , this.state.name);
@@ -185,6 +211,7 @@ class EditItems extends Component {
         formData.append("status"     , this.state.status);
         formData.append("price"      , this.state.price);
         formData.append("photo"      , this.state.photo);
+        formData.append("category_id", this.state.category_id);
 
         const id=this.props.match.params.id
 
@@ -263,6 +290,29 @@ class EditItems extends Component {
                                 </select>
                                 <small style={{ color: "red" }}>
                                     {this.state.statusRequired}
+                                </small>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="exampleInputdescription1">
+                                    category
+                                </label>
+                                <select
+                                    type      = "text"
+                                    className = "form-control"
+                                    id        = "exampleInputdescription1"
+                                    name      = "category_id"
+                                    value     = {this.state.category_id}
+                                    onChange  = {this.changeState}
+                                >
+                                    {this.state.categories.map(category=>{
+                                        return(
+                                        <option value={category.id}>{category.name}</option>
+                                        ) 
+                                    })}
+                                    
+                                </select>
+                                <small style={{ color: "red" }}>
+                                    {this.state.categoryRequired}
                                 </small>
                             </div>
                             <div className="form-group">

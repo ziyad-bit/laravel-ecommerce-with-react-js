@@ -25,7 +25,9 @@ Route::group(['prefix' => 'admins', 'namespace' => 'Admins'], function () {
 Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['adminsRoutes' , 'jwt.auth'] ], function () {
     Route::get ('authadmin' , 'AdminsController@getAuthenticatedAdmin');
     Route::post('add/admins', 'AdminsController@addAdmins');
+    Route::post('update/admins/{id}', 'AdminsController@updateAdmin');
     Route::get ('get/admins' , 'AdminsController@getAdmin');
+    Route::get ('get/admins/count' , 'AdminsController@getCount');
     Route::delete('delete/admins/{id}', 'AdminsController@deleteAdmin');
 });
 
@@ -35,6 +37,7 @@ Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['ad
     Route::post  ('add/items/{id}'         , 'ItemsController@addItem');
     Route::get   ('get/items'              , 'ItemsController@getItem');
     Route::get   ('edit/items/{id}'        , 'ItemsController@editItem');
+    Route::get   ('get/items/count'        , 'ItemsController@getCount');
     Route::post  ('update/items/{id}'      , 'ItemsController@updateItem');
     Route::delete('delete/items/{id}'      , 'ItemsController@deleteItem');
 });
@@ -44,6 +47,7 @@ Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['ad
 Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['adminsRoutes' , 'jwt.auth'] ], function () {
     Route::post  ('add/users'              , 'MembersController@addUser');
     Route::get   ('get/users'              , 'MembersController@getUser');
+    Route::get   ('get/users/count'        , 'MembersController@getCount');
     Route::delete('delete/users/{id}'      , 'MembersController@deleteUser');
     Route::get   ('edit/users/{id}'        , 'MembersController@editUser');
     Route::post  ('update/users/{id}'      , 'MembersController@updateUser');

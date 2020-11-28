@@ -13,6 +13,7 @@ class AddUsers extends Component {
         //validation
         nameRequired    : "",
         emailRequired   : "",
+        emailUnique     :'',
         statusRequired  : "",
         passwordRequired: "",
         photoRequired   : "",
@@ -132,23 +133,31 @@ class AddUsers extends Component {
         formData.append("name"    , this.state.name);
         formData.append("email"   , this.state.email);
         formData.append("password", this.state.password);
-        formData.append("photo"   , this.state.photo);
-
-        addusers(formData).then(res => {
-            if (res) {
-                this.inputRef.current.value = "";
+        if(this.state.photo){
+            formData.append("photo"   , this.state.photo);
+        }
+        
+        
+        
+        addusers(formData)
+            .then(res => {
+                if (res) {
+                    this.inputRef.current.value = "";
+                    this.setState({
+                        success     : "you add user successfully",
+                        name        : "",
+                        email       : "",
+                        password    : "",
+                        email_unique: ''
+                    });
+                }
+            })
+            .catch(err => {
                 this.setState({
-                    success : "you add user successfully",
-                    name    : "",
-                    email   : "",
-                    password: ""
+                    emailUnique: err.response.data.email_unique,
+                    success    : ""
                 });
-            } else {
-                this.setState({
-                    success: ""
-                });
-            }
-        });
+            });
     };
 
     render() {
@@ -192,6 +201,9 @@ class AddUsers extends Component {
                                 />
                                 <small style={{ color: "red" }}>
                                     {this.state.emailRequired}
+                                </small>
+                                <small style={{ color: "red" }}>
+                                    {this.state.emailUnique}
                                 </small>
                             </div>
 

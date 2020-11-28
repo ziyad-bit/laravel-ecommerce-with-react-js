@@ -13,6 +13,7 @@ class EditUsers extends Component {
         //validation
         nameRequired    : "",
         emailRequired   : "",
+        emailUnique     : "",
         statusRequired  : "",
         passwordRequired: "",
         photoRequired   : "",
@@ -144,21 +145,24 @@ class EditUsers extends Component {
         formData.append("photo"   , this.state.photo);
 
         const id = this.props.match.params.id;
-        updateUser(id, formData).then(res => {
-            if (res) {
-                this.inputRef.current.value = "";
+        updateUser(id, formData)
+            .then(res => {
+                if (res) {
+                    this.inputRef.current.value = "";
+                    this.setState({
+                        success: "you add user successfully",
+                        name: "",
+                        email: "",
+                        password: ""
+                    });
+                }
+            })
+            .catch(err => {
                 this.setState({
-                    success : "you add user successfully",
-                    name    : "",
-                    email   : "",
-                    password: ""
-                });
-            } else {
-                this.setState({
+                    emailUnique: err.response.data.email_unique,
                     success: ""
                 });
-            }
-        });
+            });
     };
 
     render() {
@@ -202,6 +206,9 @@ class EditUsers extends Component {
                                 />
                                 <small style={{ color: "red" }}>
                                     {this.state.emailRequired}
+                                </small>
+                                <small style={{ color: "red" }}>
+                                    {this.state.emailUnique}
                                 </small>
                             </div>
 

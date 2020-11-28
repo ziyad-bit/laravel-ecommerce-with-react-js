@@ -26,7 +26,7 @@ class MembersController extends Controller
         $validator=Validator::make($request->only('email'),$emailUniqueRule);
 
         if($validator->fails()){
-            return response()->json(['error at validation'] , 400);
+            return response()->json($error, 400);
         }
 
         //import from trait(MembersRules)
@@ -74,7 +74,18 @@ class MembersController extends Controller
     }
 
     public function updateUser(Request $request,$id){
+        $emailUniqueRule=[
+            'email'=>'unique:users,email,' . $id
+        ];
+        $error=[
+            'email_unique'=>'this email is used'
+        ];
         
+        $validator=Validator::make($request->only('email'),$emailUniqueRule);
+        if($validator->fails()){
+            return response()->json($error , 400);
+        }
+
         $photo=$request->file('photo');
         $rules=$this->MembersRules($photo,$id);
 
@@ -99,4 +110,10 @@ class MembersController extends Controller
         
         return response()->json(compact('users'));
     }
+
+    public function getCount(){
+		$users=Users::all();
+		$usersCount=$users->count();
+		return response()->json(compact('usersCount'));
+	}
 }

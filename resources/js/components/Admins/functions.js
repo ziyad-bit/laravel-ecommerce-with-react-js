@@ -7,7 +7,7 @@ export const login = async adminsData => {
         .post(
             url + "login",
             {
-                email: adminsData.email,
+                email   : adminsData.email,
                 password: adminsData.password
             },
             {

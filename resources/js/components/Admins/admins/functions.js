@@ -30,6 +30,19 @@ export const getAdmin = async () => {
         });
 };
 
+export const getAdminCount = async () => {
+    return await axios
+        .get(url + "get/admins/count" , {
+            headers: token
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 export const handlePage = async (pageNumber) => {
     return await axios
         .get(url + "get/admins?page="+pageNumber , {
@@ -53,5 +66,19 @@ export const deleteAdmins = async (id) => {
         })
         .catch(err => {
             console.log(err);
+        });
+};
+
+export const updateAdmins = async (id, formData) => {
+    return await axios
+        .post(url + "update/admins/"+id , formData, {
+            headers: token
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err.response);
+            throw err;
         });
 };

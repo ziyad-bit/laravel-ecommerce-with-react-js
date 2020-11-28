@@ -20,6 +20,7 @@ import EditCategory from "./Admins/category/EditCategory";
 import EditPhoto from "./Admins/category/EditPhoto";
 import AddAdmins from "./Admins/admins/AddAdmins";
 import GetAdmins from "./Admins/admins/GetAdmins";
+import EditAdmins from "./Admins/admins/EditAdmin";
 
 library.add(fab,faHome, faAngleDoubleLeft ,faBriefcase ,faPlusSquare ,faTrash ,faEdit,faUserTie,faUsers,faBorderAll)
 
@@ -44,6 +45,7 @@ class App extends Component {
                             {/* admins */}
                             <Route exact path = "/add/admins"          component = {AddAdmins} />
                             <Route exact path = "/get/admins"          component = {GetAdmins} />
+                            <Route exact path = "/edit/admins"          component = {EditAdmins} />
 
                             {/* category */}
                             <Route exact path="/add/category"          component={AddCategory} />

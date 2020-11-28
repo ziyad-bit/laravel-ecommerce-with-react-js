@@ -20,6 +20,7 @@ class CreateItemsTable extends Migration
             $table->string('status');
             $table->string('price');
             $table->string('photo');
+            $table->foreignId('category_id')->constrained('category')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('approve');
             $table->integer('admins_id');
             $table->date('date');
