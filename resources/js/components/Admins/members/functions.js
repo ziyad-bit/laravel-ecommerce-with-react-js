@@ -33,7 +33,7 @@ export const getUser = async () => {
 export const getUserCount = async () => {
     return await axios
         .get(url + "get/users/count" , {
-            headers: token
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;

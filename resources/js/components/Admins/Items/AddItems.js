@@ -303,6 +303,7 @@ class AddItems extends Component {
                                     value     = {this.state.category_id}
                                     onChange  = {this.changeState}
                                 >
+                                    <option value=''>...</option>
                                     {this.state.categories.map(category=>{
                                         return(
                                         <option value={category.id}>{category.name}</option>

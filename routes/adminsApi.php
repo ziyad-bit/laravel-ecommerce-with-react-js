@@ -22,12 +22,13 @@ Route::group(['prefix' => 'admins', 'namespace' => 'Admins'], function () {
 });
 
 ###################     admins    ##############  
+
 Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['adminsRoutes' , 'jwt.auth'] ], function () {
-    Route::get ('authadmin' , 'AdminsController@getAuthenticatedAdmin');
-    Route::post('add/admins', 'AdminsController@addAdmins');
-    Route::post('update/admins/{id}', 'AdminsController@updateAdmin');
-    Route::get ('get/admins' , 'AdminsController@getAdmin');
-    Route::get ('get/admins/count' , 'AdminsController@getCount');
+    Route::get   ('authadmin'         , 'AdminsController@getAuthenticatedAdmin');
+    Route::post  ('add/admins'        , 'AdminsController@addAdmins');
+    Route::post  ('update/admins/{id}', 'AdminsController@updateAdmin');
+    Route::get   ('get/admins'        , 'AdminsController@getAdmin');
+    Route::get   ('get/admins/count'  , 'AdminsController@getCount');
     Route::delete('delete/admins/{id}', 'AdminsController@deleteAdmin');
 });
 

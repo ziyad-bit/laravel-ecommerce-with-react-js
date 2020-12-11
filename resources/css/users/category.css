@@ -1,0 +1,22 @@
+.card{
+    margin-top: 30px;
+}
+
+.image{
+    max-height: 220px;
+}
+
+.status{
+    color:#2980b9 ;
+    font-weight: bold;
+}
+
+.date{
+    color: #2980b9;
+    font-weight: bold;
+    margin-right: 9px;
+}
+
+.buy-btn{
+    margin-top: 5px;
+}

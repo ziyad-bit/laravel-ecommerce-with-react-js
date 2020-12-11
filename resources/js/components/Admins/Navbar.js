@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Component } from "react";
 import { Link, Redirect, withRouter } from "react-router-dom";
 import "../../../css/admins/navbar.css";
+
 class Navbar extends Component {
     logout(e) {
         e.preventDefault();
@@ -74,7 +75,7 @@ class Navbar extends Component {
         </div>
     </nav>
         return (
-            <div> {localStorage.adminsToken ? Navbar : <Redirect to='/adminsLogin' ></Redirect>} </div>
+            <div> {localStorage.adminsToken ? Navbar : null} </div>
         );
     }
 }

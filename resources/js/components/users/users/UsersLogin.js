@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { login } from "./functions";
-import '../../../css/admins/login.css'
+import { userLogin } from "./functions";
+import '../../../../css/admins/login.css'
 
-class Login extends Component {
+class UsersLogin extends Component {
     state = {
         //inputs
         email:'',
@@ -26,9 +26,9 @@ class Login extends Component {
             password:this.state.password
         }
 
-        login(adminsData).then(res=>{
+        userLogin(adminsData).then(res=>{
             if(res){
-                this.props.history.push(`/home`);
+                this.props.history.push(`/`);
             }else{
                 this.setState({
                     error:'email or password is wrong'
@@ -45,7 +45,7 @@ class Login extends Component {
                 className="card text-white bg-dark mb-3 card_login"
                 style={{ maxWidth: "18rem" }}
             >
-                <div className="card-header">admins login</div>
+                <div className="card-header"> login </div>
                 <div className="card-body">
                     <form onSubmit={this.submitState}>
                         <div className="form-group">
@@ -87,4 +87,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default UsersLogin;

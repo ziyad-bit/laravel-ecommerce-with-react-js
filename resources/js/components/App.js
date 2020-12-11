@@ -21,6 +21,13 @@ import EditPhoto from "./Admins/category/EditPhoto";
 import AddAdmins from "./Admins/admins/AddAdmins";
 import GetAdmins from "./Admins/admins/GetAdmins";
 import EditAdmins from "./Admins/admins/EditAdmin";
+import UsersHome from "./users/UsersHome";
+import UsersLogin from "./users/users/UsersLogin";
+import SignUp from "./users/users/SignUp";
+import UserNavbar from "./users/UserNavbar";
+import UserGetCategory from "./users/category/UserGetCategory";
+import GetCategoryItems from "./users/category/GetCategoryItems";
+import UserGetItems from "./users/items/UserGetItems";
 
 library.add(fab,faHome, faAngleDoubleLeft ,faBriefcase ,faPlusSquare ,faTrash ,faEdit,faUserTie,faUsers,faBorderAll)
 
@@ -31,7 +38,22 @@ class App extends Component {
             <div>
                 <Router>
                     <Navbar />
+                    <UserNavbar/>
                     <div className="container">
+            {/*  ###################### users   ############################## */}
+                            {/* users */}
+                        <Route exact path="/"                component={UsersHome} />
+                        <Route exact path="/users/login"     component={UsersLogin} />
+                        <Route exact path="/users/signup"    component={SignUp} />
+
+                        {/* category */}
+                        <Route exact path="/users/get/categories"       component={UserGetCategory} />
+                        <Route exact path="/users/get/categories/items/:id"       component={GetCategoryItems}/>
+                        
+                        {/* items */}
+                        <Route exact path="/users/get/items"       component={UserGetItems} /> 
+            {/*  ###################### admins   ############################## */}
+
                             {/* items */}
                             <Route exact path="/edit/item/:id"     component={EditItems} />
                             <Route exact path="/getitem"           component={GetItems} />
@@ -45,7 +67,7 @@ class App extends Component {
                             {/* admins */}
                             <Route exact path = "/add/admins"          component = {AddAdmins} />
                             <Route exact path = "/get/admins"          component = {GetAdmins} />
-                            <Route exact path = "/edit/admins"          component = {EditAdmins} />
+                            <Route exact path = "/edit/admins"         component = {EditAdmins} />
 
                             {/* category */}
                             <Route exact path="/add/category"          component={AddCategory} />

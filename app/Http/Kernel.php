@@ -64,6 +64,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'adminsRoutes'=>\App\Http\Middleware\adminsRoutes::class,
+        'usersRoutes'=>\App\Http\Middleware\usersRoutes::class,
         'jwt.auth'=>\Tymon\JWTAuth\Http\Middleware\Authenticate::class,
     ];
 }

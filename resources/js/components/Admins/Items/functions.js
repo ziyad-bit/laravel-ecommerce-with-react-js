@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const url   = "http://localhost:8000/api/admins/";
-const token = { Authorization: `bearer ${localStorage.adminsToken}`};
+const token = { Authorization: `Bearer ${localStorage.adminsToken}`};
 
 export const additems = async (admins_id, formData) => {
     return await axios
@@ -32,7 +32,7 @@ export const getitems = async () => {
 export const getitemsCount = async () => {
     return await axios
         .get(url + "get/items/count" , {
-            headers: token
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;

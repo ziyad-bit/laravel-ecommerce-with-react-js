@@ -75,7 +75,7 @@ class GetAdmins extends Component {
                                     <th scope="row">{admin.id}</th>
                                     <td>{admin.name}</td>
                                     <td>{admin.email}</td>
-                                    <td>{admin.date}</td>
+                                    <td>{admin.created_at}</td>
                                     <td>
                                         <Link
                                             className="btn btn-info"
