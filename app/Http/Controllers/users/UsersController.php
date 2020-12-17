@@ -74,11 +74,11 @@ class UsersController extends Controller
         
     }
 
-    public function getAuthenticatedAdmin()
+    public function getAuthenticatedUser()
 {
 	try {
 
-		if (! $admin = JWTAuth::parseToken()->authenticate()) {
+		if (! $user = JWTAuth::parseToken()->authenticate()) {
 			return response()->json(['user_not_found'], 404);
 		}
 
@@ -97,7 +97,7 @@ class UsersController extends Controller
 	}
 
 	// the token is valid and we have found the user via the sub claim
-	return response()->json(compact('admin'));
+	return response()->json(compact('user'));
 }
 
 }

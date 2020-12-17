@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import { userGetItems,handlePage } from "./functions";
 import "../../../../css/users/category.css";
 import Pagination from "react-js-pagination";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class UserGetItems extends Component {
     state = {
@@ -39,7 +41,10 @@ class UserGetItems extends Component {
     render() {
         return (
             <div>
-                
+                <Link className="btn btn-info add_btn" to="/users/add/items">
+                    <FontAwesomeIcon icon='plus-square' className='icon'/>
+                    Add item
+                </Link>
                 <div className="row">
                     {this.state.items.map(item => {
                         return (
@@ -83,12 +88,12 @@ class UserGetItems extends Component {
                                             </li>
                                         </ul>
 
-                                        <a
-                                            href="#"
+                                        <Link
+                                            to={"/users/get/items/"+item.id}
                                             className="btn btn-success buy-btn"
                                         >
                                             buy ${item.price}
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

@@ -20,16 +20,22 @@ Route::group(['prefix' => 'users', 'namespace' => 'users'], function () {
     Route::post('signup'  , 'UsersController@addUser');
 });
 
+###################      users      ##################
+Route::group(['prefix' => 'users', 'namespace' => 'users', 'middleware'=>['usersRoutes' , 'jwt.auth']], function () {
+    Route::get('get/authuser'   , 'UsersController@getAuthenticatedUser');
+    Route::post('signup'  , 'UsersController@addUser');
+});
+
 ###################       category              ###################
 Route::group(['prefix' => 'users', 'namespace' => 'users' , 'middleware'=>['usersRoutes' , 'jwt.auth'] ], function () {
     Route::get   ('get/category'              , 'CategoryController@getCategory');
     Route::get   ('get/category/items/{id}'   , 'CategoryController@getCategoryItems');
-
+    Route::get   ('get/category/items/{id}'   , 'CategoryController@getCategoryItems');
 });
 
 ###################       items              ###################
 Route::group(['prefix' => 'users', 'namespace' => 'users' , 'middleware'=>['usersRoutes' , 'jwt.auth'] ], function () {
     Route::get   ('get/items'              , 'ItemsController@getItem');
-    Route::get   ('get/category/items/{id}'   , 'CategoryController@getCategoryItems');
-
+    Route::get   ('get/items/{id}'              , 'ItemsController@getItemDetails');
+    Route::post   ('add/items/{id}'              , 'ItemsController@addItem');
 });

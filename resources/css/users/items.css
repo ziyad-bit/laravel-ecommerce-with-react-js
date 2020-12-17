@@ -1,0 +1,37 @@
+.name{
+    color       : #27ae60;
+    font-weight : bold;
+    margin-right: 42px;
+}
+
+.status{
+    color       : #27ae60;
+    font-weight : bold;
+    margin-right: 40px;
+}
+
+.price{
+    color       : #27ae60;
+    font-weight : bold;
+    margin-right: 45px;
+}
+
+.date{
+    color       : #27ae60;
+    font-weight : bold;
+    margin-right: 47px;
+}
+
+.description{
+    color      : #27ae60;
+    font-weight: bold;
+}
+
+.card_item{
+    margin    : auto;
+    margin-top: 50px;
+}
+
+.list-group-item:nth-child(even){
+    background-color: #eee;
+}

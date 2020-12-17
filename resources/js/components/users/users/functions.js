@@ -39,3 +39,17 @@ export const userLogin = async usersData => {
             console.log(err);
         });
 };
+
+export const getAuthUser = async ( ) => {
+    return await axios
+        .get(url + "get/authuser" ,  {
+            headers: { Authorization: `Bearer ${localStorage.user_token}`}
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+            throw err
+        });
+};
