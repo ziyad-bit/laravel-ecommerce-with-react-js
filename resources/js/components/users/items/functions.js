@@ -52,3 +52,29 @@ export const userAddItems = async (id,formData) => {
             console.log(err);
         });
 };
+
+export const userAddComment = async (newComment) => {
+    return await axios
+        .post(url + "comment/add" ,newComment, {
+            headers: { Authorization: `Bearer ${localStorage.user_token}`}
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+export const userGetComment = async (id) => {
+    return await axios
+        .get(url + "comment/get/"+id , {
+            headers: { Authorization: `Bearer ${localStorage.user_token}`}
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};

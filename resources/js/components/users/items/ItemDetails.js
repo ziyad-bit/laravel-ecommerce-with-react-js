@@ -1,21 +1,32 @@
 import React, { Component } from "react";
-import { getItemDetails } from "./functions";
+import { getItemDetails, userAddComment, userGetComment } from "./functions";
+import { getAuthUser } from "../users/functions";
 import "../../../../css/users/items.css";
 
 class ItemDetails extends Component {
     state = {
+        //item
+        id         :'',
         name       : "",
         description: "",
         status     : "",
         price      : "",
         date       : "",
-        photo      : ""
+        photo      : "",
+
+        //user
+        user_id   : "",
+        user_photo: "",
+        user_name : "",
+
+        users_comment:[]
     };
 
     componentDidMount() {
         const id=this.props.match.params.id
         getItemDetails(id).then(res => {
             this.setState({
+                id         : res.data.item.id,
                 name       : res.data.item.name,
                 description: res.data.item.description,
                 status     : res.data.item.status,
@@ -23,12 +34,64 @@ class ItemDetails extends Component {
                 price      : res.data.item.price,
                 photo      : res.data.item.photo
             });
+
+            userGetComment(id).then(res=>{
+                this.setState({
+                    users_comment:res.data.user_comment
+                })
+            })
         });
+
+        getAuthUser().then(res=>{
+            this.setState({
+                user_id   : res.data.user.id,
+                user_name : res.data.user.name,
+                user_photo: res.data.user.photo
+            });
+        })
+
+        
+    }
+
+    componentDidUpdate(){
+        console.log('updated')
+    }
+
+    handleState=(e)=>{
+        this.setState({
+            [e.target.name]:e.target.value
+        })
+    }
+
+    submitState=(e)=>{
+        e.preventDefault()
+
+        const newComment={
+            comment: this.state.comment,
+            user_id: this.state.user_id,
+            item_id: this.state.id,
+        }
+
+        userAddComment(newComment).then(res=>{
+            if(res){
+                this.setState({
+                    comment:""
+                })
+            }
+            
+        })
+
+        const id=this.props.match.params.id
+        userGetComment(id).then(res=>{
+            this.setState({
+                users_comment:res.data.user_comment
+            })
+        })
     }
 
     render() {
         return (
-            <div >
+            <div>
                 <div className="card mb-3 card_item" style={{ maxWidth: 540 }}>
                     <div className="row no-gutters">
                         <div className="col-md-4">
@@ -44,14 +107,18 @@ class ItemDetails extends Component {
                                     item information
                                 </li>
                                 <li className="list-group-item">
-                                    <span className='name'> name </span>:{this.state.name}
+                                    <span className="name"> name </span>:
+                                    {this.state.name}
                                 </li>
                                 <li className="list-group-item">
-                                    <span className='description'> description </span>:
-                                    {this.state.description}
+                                    <span className="description">
+                                        {" "}
+                                        description{" "}
+                                    </span>
+                                    :{this.state.description}
                                 </li>
                                 <li className="list-group-item">
-                                    <span className='status'> status </span>:
+                                    <span className="status"> status </span>:
                                     {this.state.status == 1 ? (
                                         <span> new </span>
                                     ) : null}
@@ -60,17 +127,76 @@ class ItemDetails extends Component {
                                     ) : null}
                                 </li>
                                 <li className="list-group-item">
-                                <span className='price'> price </span>:
-                                    ${this.state.price}
+                                    <span className="price"> price </span>: $
+                                    {this.state.price}
                                 </li>
                                 <li className="list-group-item">
-                                <span className='date'> date </span>:
+                                    <span className="date"> date </span>:
                                     {this.state.date}
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
+
+                <hr />
+
+                <div className="row">
+                    <div className="col-md-3 user">
+                        <div>{this.state.user_name}</div>
+
+                        <img
+                            src={"images/users/" + this.state.user_photo}
+                            className="rounded-circle"
+                        />
+                    </div>
+
+                    <div className="col-md-9 comment">
+                        <form onSubmit={this.submitState}>
+                            <div class="form-group">
+                                <label >
+                                    comment
+                                </label>
+                                <textarea
+                                    type             = "text"
+                                    rows             = {3}
+                                    class            = "form-control"
+                                    id               = "exampleInputEmail1"
+                                    aria-describedby = "emailHelp"
+                                    name             = 'comment'
+                                    value            = {this.state.comment}
+                                    onChange         = {this.handleState}
+                                ></textarea>
+                                
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                Submit
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <hr/>
+
+                {this.state.users_comment.map(user_comment=>{
+                    return(
+                        <div className="row user-comment">
+                    <div className="col-md-3 user">
+                        <div>{user_comment.users.name}</div>
+
+                        <img
+                            src={"images/users/" + user_comment.users.photo}
+                            className="rounded-circle"
+                        />
+                    </div>
+
+                    <div className="col-md-9 comment">
+                        {user_comment.comment}
+                    </div>
+                    </div>
+                    ) 
+                })}
             </div>
         );
     }

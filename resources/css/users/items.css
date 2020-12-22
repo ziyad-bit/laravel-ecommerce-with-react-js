@@ -35,3 +35,26 @@
 .list-group-item:nth-child(even){
     background-color: #eee;
 }
+
+.rounded-circle{
+    max-height: 50px;
+    width: 50px;
+}
+
+textarea{
+    width: 545px !important;
+}
+
+.user{
+    position: absolute;
+    margin-left: 200px;
+}
+
+.comment{
+    margin-left: 280px;
+    margin-top: 20px;
+}
+
+.user-comment{
+    margin-bottom: 100px;
+}

@@ -22,8 +22,8 @@ Route::group(['prefix' => 'users', 'namespace' => 'users'], function () {
 
 ###################      users      ##################
 Route::group(['prefix' => 'users', 'namespace' => 'users', 'middleware'=>['usersRoutes' , 'jwt.auth']], function () {
-    Route::get('get/authuser'   , 'UsersController@getAuthenticatedUser');
-    Route::post('signup'  , 'UsersController@addUser');
+    Route::get ('get/authuser'   , 'UsersController@getAuthenticatedUser');
+    Route::post('signup'         , 'UsersController@addUser');
 });
 
 ###################       category              ###################
@@ -36,6 +36,13 @@ Route::group(['prefix' => 'users', 'namespace' => 'users' , 'middleware'=>['user
 ###################       items              ###################
 Route::group(['prefix' => 'users', 'namespace' => 'users' , 'middleware'=>['usersRoutes' , 'jwt.auth'] ], function () {
     Route::get   ('get/items'              , 'ItemsController@getItem');
-    Route::get   ('get/items/{id}'              , 'ItemsController@getItemDetails');
-    Route::post   ('add/items/{id}'              , 'ItemsController@addItem');
+    Route::get   ('get/items/{id}'         , 'ItemsController@getItemDetails');
+    Route::post  ('add/items/{id}'         , 'ItemsController@addItem');
+});
+
+###################       comments              ###################
+Route::group(['prefix' => 'users/comment', 'namespace' => 'users' , 'middleware'=>['usersRoutes' , 'jwt.auth'] ], function () {
+    Route::get   ('get/items'              , 'ItemsController@getItem');
+    Route::get   ('get/{id}'               , 'CommentController@get');
+    Route::post  ('add'                    , 'CommentController@add');
 });

@@ -14,6 +14,10 @@ class Users extends Authenticatable implements JWTSubject
     protected $table='users';
     protected $fillable=['name','email','password','date','photo','approve'];
     protected $hidden=['password','remember_token'];
+
+    public function comment(){
+        return $this->hasMany('App\Models\Comment','user_id');
+    }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
