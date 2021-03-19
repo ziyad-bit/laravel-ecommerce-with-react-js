@@ -23,81 +23,74 @@ class UsersController extends Controller
         Auth::shouldUse('users');
     }
 
-    public function addUser(Request $request ){
-        $emailUniqueRule=[
-            'email'=>'unique:users'
-        ];
-        $error=[
-            'email_unique'=>'this email is used'
-        ];
-        
-        $validator=Validator::make($request->only('email'),$emailUniqueRule);
+    ######################################        add            ########################## 
+    public function add(Request $request ){
+        try {
+            //import from trait(MembersRules)
+            $rules=$this->MembersRules(null,$request,0);
 
-        if($validator->fails()){
-            return response()->json($error, 400);
-        }
+            $validator=Validator::make($request->all(),$rules);
 
-        //import from trait(MembersRules)
-        $rules=$this->MembersRules($request);
-
-        $validator=Validator::make($request->all(),$rules);
-
-        if($validator->fails()){
-            return response()->json(['error at validation'] , 400);
-        }
-        
-        $users=Users::create([
-            'name'     => $request->get('name'),
-            'email'    => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-            'date'     => now(),
-            
-        ]
-        
-        );
-
-        return response()->json(compact('users'));
-    }
-
-    public function userLogin(Request $request){
-		
-        $credentials=$request->all();
-        try{
-            if(! $user_token = JWTAuth::attempt($credentials)){
-                return response()->json(['invalid credentails']);
+            if($validator->fails()){
+                return  $this->returnError($validator->errors(),400);
             }
-        }catch(JWTException $e){
-            return response()->json(['cant create token']);
-        }
             
-        return response()->json(compact('user_token'));
-        
+            $name     = filter_var($request->name       ,FILTER_SANITIZE_STRING);
+            $email    = filter_var($request->email      ,FILTER_SANITIZE_EMAIL);
+            $password = filter_var($request->password   ,FILTER_SANITIZE_STRING);
+
+            $users=Users::create([
+                'name'     => $name,
+                'email'    => $email,
+                'password' => Hash::make($password),
+                'date'     => now(),
+                ]);
+
+            return $this->returnSuccess('you successfully added user');
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
+        }
     }
 
+    ######################################        login            ########################## 
+    public function userLogin(Request $request){
+        try{
+            $credentials=$request->all();
+            if(! $user_token = JWTAuth::attempt($credentials)){
+                return  $this->returnError('incorrect email and password',400);
+            }
+
+            return $this->returnSuccess('you successfully logged in','user_token',$user_token);
+
+        }catch(JWTException $e){
+            return  $this->returnError("can't create token",$e->getStatusCode());
+        }
+    }
+
+    ######################################        get auth user            ########################## 
     public function getAuthenticatedUser()
 {
 	try {
-
 		if (! $user = JWTAuth::parseToken()->authenticate()) {
-			return response()->json(['user_not_found'], 404);
+			return  $this->returnError("user isn't found",404);
 		}
+
+        return $this->returnSuccess('','user',$user);
 
 	} catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
 
-		return response()->json(['token_expired'], $e->getStatusCode());
+		return  $this->returnError("token is expired",$e->getStatusCode());
 
 	} catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
 
-		return response()->json(['token_invalid'], $e->getStatusCode());
+		return  $this->returnError("invalid token",$e->getStatusCode());
 
 	} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
 
-		return response()->json(['token_absent'], $e->getStatusCode());
+		return  $this->returnError("token is absent",$e->getStatusCode());
 
 	}
-
-	// the token is valid and we have found the user via the sub claim
-	return response()->json(compact('user'));
 }
 
 }

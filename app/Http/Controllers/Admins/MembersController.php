@@ -14,7 +14,8 @@ class MembersController extends Controller
 {
     use UploadPhoto;
     use MembersRules;
-
+    
+    ######################################        add            ################################# 
     public function addUser(Request $request){
         try {
             //import from trait(MembersRules)
@@ -54,6 +55,7 @@ class MembersController extends Controller
         
     }
 
+    ######################################        get            ############################ 
     public function getUser(){
         try {
             $users=Users::orderBy('id','desc')->paginate(2);
@@ -64,6 +66,7 @@ class MembersController extends Controller
         }
     }
 
+    ######################################        delete            ########################## 
     public function deleteUser($id){
         try {
             $users=Users::find($id);
@@ -79,6 +82,7 @@ class MembersController extends Controller
         }
     }
 
+    ######################################        edit            ########################## 
     public function editUser($id){
         try {
             $users=Users::find($id);
@@ -93,6 +97,7 @@ class MembersController extends Controller
         }
     }
 
+    ######################################        update            ########################## 
     public function updateUser(Request $request,$id){
         try {
             $photo=$request->file('photo');
@@ -126,13 +131,14 @@ class MembersController extends Controller
     
             $users->save();
             
-            return $this->returnSuccess('you successfully updated user');
+            return $this->returnSuccess('you successfully updated admin');
 
         } catch (\Exception $th) {
             return  $this->returnError('something went wrong',500);
         }
     }
 
+    ######################################        get count            ########################## 
     public function getCount(){
         try {
             $users=Users::all();

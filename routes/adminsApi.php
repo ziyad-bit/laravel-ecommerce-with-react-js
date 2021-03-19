@@ -21,48 +21,46 @@ Route::group(['prefix' => 'admins', 'namespace' => 'Admins'], function () {
     
 });
 
-###################      admins          ###################################################  
-
+###################      admins          ###################################################  a
 Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['jwt.auth','adminsRoutes'] ], function () {
-    Route::get   ('authadmin'         , 'AdminsController@getAuthenticatedAdmin');
-    Route::post  ('add/admins'        , 'AdminsController@addAdmins');
-    Route::post  ('update/admins/{id}', 'AdminsController@updateAdmin');
-    Route::post  ('get/admins'        , 'AdminsController@getAdmin');
-    Route::post  ('logout'            , 'AdminsController@adminsLogout');
-    Route::get   ('get/admins/count'  , 'AdminsController@getCount');
-    Route::delete('delete/admins/{id}', 'AdminsController@deleteAdmin');
+    Route::get   ('getauth'    , 'AdminsController@getAuthenticatedAdmin');
+    Route::post  ('add'        , 'AdminsController@addAdmins');
+    Route::post  ('update/{id}', 'AdminsController@updateAdmin');
+    Route::post  ('get'        , 'AdminsController@getAdmin');
+    Route::post  ('logout'     , 'AdminsController@adminsLogout');
+    Route::get   ('get/count'  , 'AdminsController@getCount');
+    Route::delete('delete/{id}', 'AdminsController@deleteAdmin');
 });
 
 ###################       items         ##############################################
-
-Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['jwt.auth','adminsRoutes'] ], function () {
-    Route::post  ('add/items/{id}'         , 'ItemsController@addItem');
-    Route::get   ('get/items'              , 'ItemsController@getItem');
-    Route::post  ('edit/items/{id}'        , 'ItemsController@editItem');
-    Route::get   ('get/items/count'        , 'ItemsController@getCount');
-    Route::post  ('update/items/{id}'      , 'ItemsController@updateItem');
-    Route::delete('delete/items/{id}'      , 'ItemsController@deleteItem');
+Route::group(['prefix' => 'admins/items', 'namespace' => 'Admins' , 'middleware'=>['jwt.auth','adminsRoutes'] ], function () {
+    Route::post  ('add/{id}'         , 'ItemsController@addItem');
+    Route::get   ('get'              , 'ItemsController@getItem');
+    Route::post  ('edit{id}'         , 'ItemsController@editItem');
+    Route::get   ('get/count'        , 'ItemsController@getCount');
+    Route::post  ('update/{id}'      , 'ItemsController@updateItem');
+    Route::delete('delete/{id}'      , 'ItemsController@deleteItem');
 });
 
 ###################       users         #############################################
 
-Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['adminsRoutes' , 'jwt.auth'] ], function () {
-    Route::post  ('add/users'              , 'MembersController@addUser');
-    Route::get   ('get/users'              , 'MembersController@getUser');
-    Route::get   ('get/users/count'        , 'MembersController@getCount');
-    Route::delete('delete/users/{id}'      , 'MembersController@deleteUser');
-    Route::get   ('edit/users/{id}'        , 'MembersController@editUser');
-    Route::post  ('update/users/{id}'      , 'MembersController@updateUser');
+Route::group(['prefix' => 'admins/users', 'namespace' => 'Admins' , 'middleware'=>['adminsRoutes' , 'jwt.auth'] ], function () {
+    Route::post  ('add'              , 'MembersController@addUser');
+    Route::get   ('get'              , 'MembersController@getUser');
+    Route::get   ('get/count'        , 'MembersController@getCount');
+    Route::delete('delete{id}'       , 'MembersController@deleteUser');
+    Route::get   ('edit/{id}'        , 'MembersController@editUser');
+    Route::post  ('update/{id}'      , 'MembersController@updateUser');
     
 });
 
 ###################       category        #############################################
 
-Route::group(['prefix' => 'admins', 'namespace' => 'Admins' , 'middleware'=>['adminsRoutes' , 'jwt.auth'] ], function () {
-    Route::post  ('add/category'              , 'CategoryController@addCategory');
-    Route::get   ('get/category'              , 'CategoryController@getCategory');
-    Route::delete('delete/category/{id}'      , 'CategoryController@deleteCategory');
-    Route::get   ('edit/category/{id}'        , 'CategoryController@editCategory');
-    Route::post  ('update/category/{id}'      , 'CategoryController@updateCategory');
-    Route::post  ('update/photo/{id}'         , 'CategoryController@updatePhoto');
+Route::group(['prefix' => 'admins/category', 'namespace' => 'Admins' , 'middleware'=>['adminsRoutes' , 'jwt.auth'] ], function () {
+    Route::post  ('add/'             , 'CategoryController@addCategory');
+    Route::get   ('get/'             , 'CategoryController@getCategory');
+    Route::delete('delete/{id}'      , 'CategoryController@deleteCategory');
+    Route::get   ('edit/{id}'        , 'CategoryController@editCategory');
+    Route::post  ('update/{id}'      , 'CategoryController@updateCategory');
+    Route::post  ('update/photo/{id}', 'CategoryController@updatePhoto');
 });
