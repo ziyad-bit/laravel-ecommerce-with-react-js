@@ -8,6 +8,8 @@ use App\Traits\MembersRules;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
+use App\Traits\General;
+use Exception;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Hash;
@@ -16,130 +18,162 @@ class AdminsController extends Controller
 {
 	use UploadPhoto;
 	use MembersRules;
-	
+	use General;
+
+#######################################       login        ##############################
     public function adminsLogin(Request $request){
-		
-        $credentials=$request->all();
         try{
+			$credentials=$request->all();
             if(! $token = JWTAuth::attempt($credentials)){
-                return response()->json(['invalid credentails']);
+                return $this->returnError('wrong password or email',400);
             }
-        }catch(JWTException $e){
-            return response()->json(['cant create token']);
+
+			return $this->returnSuccess('you successfully logged in','token',$token);
+
+        }catch(JWTException $ex){
+            return $this->returnError("can't create token",$ex->getStatuscode());
         }
-            
-        return response()->json(compact('token'));
-        
     }
 
+#######################################       logout        ##############################
+	public function adminsLogout(Request $request){
+        try{
+			$token=$request->header('adminsToken');
+			JWTAuth::setToken($token)->invalidate();
+				
+			return $this->returnSuccess('you successfully logged out');
+
+        }catch(\Exception $ex){
+            return $this->returnError("something went wrong",500);
+        }
+    }
+
+#######################################       get authenticated admin     ##############################
     public function getAuthenticatedAdmin()
 {
 	try {
 
 		if (! $admin = JWTAuth::parseToken()->authenticate()) {
-			return response()->json(['user_not_found'], 404);
+			return $this->returnError("user isn't found",404);
 		}
+
+		return $this->returnSuccess('','admin',$admin);
 
 	} catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
 
-		return response()->json(['token_expired'], $e->getStatusCode());
+		return $this->returnError("token is expired",$e->getStatusCode());
 
 	} catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
 
-		return response()->json(['token_invalid'], $e->getStatusCode());
+		return $this->returnError("token is invalid",$e->getStatusCode());
 
 	} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
 
-		return response()->json(['token_absent'], $e->getStatusCode());
-
+		return $this->returnError("token is absent",$e->getStatusCode());
 	}
 
-	// the token is valid and we have found the user via the sub claim
-	return response()->json(compact('admin'));
 }
 
-
-
+#######################################       add         ##############################
 public function addAdmins(Request $request ){
-	$emailUniqueRule=[
-		'email'=>'unique:admins'
-	];
-	$error=[
-		'email_unique'=>'this email is used'
-	];
-	
-	$validator=Validator::make($request->only('email'),$emailUniqueRule);
+	try {
+		//import from trait(MembersRules)
+		$rules=$this->MembersRules($request);
 
-	if($validator->fails()){
-		return response()->json($error , 400);
+		$validator=Validator::make($request->all(),$rules);
+
+		if($validator->fails()){
+			return $this->returnError($validator->errors(),400);
+		}
+
+		$name     = filter_var($request->get('name')     ,FILTER_SANITIZE_STRING);
+		$email    = filter_var($request->get('email')    ,FILTER_SANITIZE_EMAIL);
+		$password = filter_var($request->get('password') ,FILTER_SANITIZE_STRING);
+
+		$admins=Admins::create([
+			'name'     => $name,
+			'email'    => $email,
+			'password' => Hash::make($password),
+		]);
+
+		return $this->returnSuccess('you successfully added admin');
+
+	} catch (\Exception $th) {
+		return $this->returnError('something went wrong',500);
 	}
-
-	//import from trait(MembersRules)
-	$rules=$this->MembersRules($request);
-
-	$validator=Validator::make($request->all(),$rules);
-
-	if($validator->fails()){
-		return response()->json(['error at validation'] , 400);
-	}
 	
-	$admins=Admins::create([
-		'name'     => $request->get('name'),
-		'email'    => $request->get('email'),
-		'password' => Hash::make($request->get('password')),
-		
-	]
-	
-	);
-
-	return response()->json(compact('admins'));
 }
 
+#######################################       get all admins        ##############################
 	public function getAdmin(){
-		$admins=Admins::orderBy('id','desc')->paginate(1);
-		return response()->json(compact('admins'));
+		try {
+			$admins=Admins::orderBy('id','desc')->paginate(1);
+			return $this->returnSuccess('','admins',$admins);
+
+		} catch (\Exception $th) {
+			return $this->returnError('something went wrong',500);
+		}
+		
 	}
 
+	#######################################       delete         ##############################
 	public function deleteAdmin($id){
-        $admins=Admins::find($id);
-        $admins->delete();
+		try {
+			$admin=Admins::find($id);
+			if(! $admin){
+				return $this->returnError("admin isn't found",404);
+			}
+			$admin->delete();
+
+		} catch (\Exception $th) {
+			return $this->returnError("something went wrong",500);
+		}
+        
 	}
 	
+	#######################################       update        ##############################
 	public function updateAdmin(Request $request,$id){
-        $emailUniqueRule=[
-            'email'=>'unique:admins,email,'.$id
-        ];
-        $error=[
-            'email_unique'=>'this email is used'
-        ];
-        
-        $validator=Validator::make($request->only('email'),$emailUniqueRule);
-		if($validator->fails()){
-            return response()->json($error , 400);
-        }
+		try {
+			$rules=$this->MembersRules($id);
 
-        
-        $rules=$this->MembersRules();
+			$validator=Validator::make($request->all(),$rules);
+			if($validator->fails()){
+				return $this->returnError($validator->errors(),400);
+			}
+			
+			$name     = filter_var($request->name     ,FILTER_SANITIZE_STRING);
+			$email    = filter_var($request->email    ,FILTER_SANITIZE_EMAIL);
+			$password = filter_var($request->password ,FILTER_SANITIZE_STRING);
+	
+			$admins=admins::find($id);
+			if(! $admins){
+				return $this->returnError("admin isn't found",404);
+			}
 
-        $validator=Validator::make($request->all(),$rules);
+			$admins->name     = $name;
+			$admins->email    = $email;
+			$admins->password = Hash::make($password);
+	
+			$admins->save();
+			
+			return response()->json(compact('admins'));
 
-        if($validator->fails()){
-            return response()->json(['error at validation'] , 400);
-        }
-
-        $admins=admins::find($id);
-        $admins->name     = $request->name;
-        $admins->email    = $request->email;
-        $admins->password = Hash::make($request->password);
-
-        $admins->save();
-        
-        return response()->json(compact('admins'));
+		} catch (\Exception $th) {
+			return $this->returnError("something went wrong",500);
+		}
 	}
 	
+	#######################################       get count        ##############################
 	public function getCount(){
-		$admins=Admins::all();
-		$adminsCount=$admins->count();
-		return response()->json(compact('adminsCount'));
+		try {
+			$admins=Admins::all();
+			$adminsCount=$admins->count();
+
+			return response()->json(compact('adminsCount'));
+
+		} catch (\Exception $th) {
+			return $this->returnError("something went wrong",500);
+		}
+		
 	}
 }

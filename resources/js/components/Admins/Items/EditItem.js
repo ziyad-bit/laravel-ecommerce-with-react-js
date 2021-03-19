@@ -23,7 +23,8 @@ class EditItems extends Component {
         photoType          : "",
         photoSize          : "",
         categoryRequired   : '',
-        success            : ""
+        success            : "",
+        error:''
     };
 
     componentDidMount() {
@@ -215,26 +216,37 @@ class EditItems extends Component {
 
         const id=this.props.match.params.id
 
-        updateitems(id, formData).then(res => {
-            if (res) {
-                this.inputRef.current.value=''
+        updateitems(id, formData)
+            .then(res => {
+                if (res) {
+                    this.inputRef.current.value = "";
+                    this.setState({
+                        success: "you created item successfully",
+                        name: "",
+                        description: "",
+                        status: "",
+                        price: ""
+                    });
+                }
+            })
+            .catch(err => {
                 this.setState({
-                    success    : "you created item successfully",
-                    name       : "",
-                    description: "",
-                    status     : "",
-                    price      : "",
+                    error: err.response.data.errors.name[0]
                 });
-            }
-        });
+            });
     };
 
     render() {
         const success = (
             <div className="alert alert-success"> {this.state.success} </div>
         );
+
+        const error = (
+            <div className="alert alert-danger"> {this.state.error} </div>
+        );
         return (
             <div>
+                {this.state.error ? error : null}
                 {this.state.success ? success : null}
                 <div
                     className = "card text-white bg-dark mb-3 card_login"

@@ -41,7 +41,7 @@
     width: 50px;
 }
 
-textarea{
+.submit_comment{
     width: 545px !important;
 }
 
@@ -57,4 +57,13 @@ textarea{
 
 .user-comment{
     margin-bottom: 100px;
+}
+
+.edit_btn{
+    position: absolute;
+    right: 60px;
+}
+
+.edit_comment{
+    width: 400px;
 }

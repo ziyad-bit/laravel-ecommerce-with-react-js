@@ -78,3 +78,29 @@ export const userGetComment = async (id) => {
             console.log(err);
         });
 };
+
+export const userEditComment = async (id) => {
+    return await axios
+        .get(url + "comment/edit/"+id , {
+            headers: { Authorization: `Bearer ${localStorage.user_token}`}
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+export const userUpdateComment = async (newComment,id) => {
+    return await axios
+        .post(url + "comment/update/"+id ,newComment ,{
+            headers: { Authorization: `Bearer ${localStorage.user_token}`}
+        })
+        .then(res => { 
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};

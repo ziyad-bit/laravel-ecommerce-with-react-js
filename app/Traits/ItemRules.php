@@ -3,14 +3,20 @@
 namespace App\Traits;
 
 trait ItemRules{
-    public function ItemRules(){
+    public function ItemRules($photo=null){
+        if($photo){
+            $photo_rule='required|image|mimes:jpg,jpeg,gif,png|max:14048';
+        }else{
+            $photo_rule='';
+        }
+
         $rules=[
             'name'        => 'required|string|min:4|max:25',
             'description' => 'required|string|min:4|max:100',
             'status'      => 'required|numeric',
             'price'       => 'required|string',
-            'photo'       => 'required|image|mimes:jpg,jpeg,gif,png|max:14048',
-            'category_id'       => 'required|not_in:0',
+            'photo'       => $photo_rule,
+            'category_id' => 'required',
         ];
         return $rules;
     }

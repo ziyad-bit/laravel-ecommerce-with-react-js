@@ -15,105 +15,133 @@ class MembersController extends Controller
     use UploadPhoto;
     use MembersRules;
 
-    public function addUser(Request $request ){
-        $emailUniqueRule=[
-            'email'=>'unique:users'
-        ];
-        $error=[
-            'email_unique'=>'this email is used'
-        ];
-        
-        $validator=Validator::make($request->only('email'),$emailUniqueRule);
+    public function addUser(Request $request){
+        try {
+            //import from trait(MembersRules)
+            $rules=$this->MembersRules(null,$request,0);
 
-        if($validator->fails()){
-            return response()->json($error, 400);
+            $validator=Validator::make($request->all(),$rules);
+
+            if($validator->fails()){
+                return  $this->returnError($validator->errors(),400);
+            }
+
+            $fileName='';
+            if($request->file('photo')){
+                //import from trait(UploadPhoto) 
+                $fileName=$this->UploadPhoto($request->file('photo') , 'images/items');
+            }
+
+            $name     = filter_var($request->get('name')        ,FILTER_SANITIZE_STRING);
+            $email    = filter_var($request->get('email')       ,FILTER_SANITIZE_STRING);
+            $password = filter_var($request->get('password')    ,FILTER_SANITIZE_STRING);
+            $photo    = filter_var($fileName                    ,FILTER_SANITIZE_STRING);
+            
+            $users=Users::create([
+                'name'     => $name,
+                'email'    => $email,
+                'password' => Hash::make($password),
+                'date'     => now(),
+                'approve'  => 1,
+                'photo'    => $photo,
+            ]);
+
+            return $this->returnSuccess('you successfully added user');
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
         }
-
-        //import from trait(MembersRules)
-        $rules=$this->MembersRules($request);
-
-        $validator=Validator::make($request->all(),$rules);
-
-        if($validator->fails()){
-            return response()->json(['error at validation'] , 400);
-        }
-
-        $fileName='';
-        if($request->file('photo')){
-            //import from trait(UploadPhoto) 
-            $fileName=$this->UploadPhoto($request->file('photo') , 'images/items');
-        }
         
-        $users=Users::create([
-            'name'     => $request->get('name'),
-            'email'    => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-            'date'     => now(),
-            'approve'  => 1,
-            'photo'    => $fileName,
-        ]
-        
-        );
-
-        return response()->json(compact('users'));
     }
 
     public function getUser(){
-        $users=Users::orderBy('id','desc')->paginate(2);
-        return response()->json(compact('users'));
+        try {
+            $users=Users::orderBy('id','desc')->paginate(2);
+            return $this->returnSuccess('','users',$users);
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
+        }
     }
 
     public function deleteUser($id){
-        $users=Users::find($id);
-        $users->delete();
+        try {
+            $users=Users::find($id);
+            if(! $users){
+                return  $this->returnError("user isn't found",404);
+            }
+            $users->delete();
+
+            return $this->returnSuccess('you successfully deleted user');
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
+        }
     }
 
     public function editUser($id){
-        $users=Users::find($id);
-        return response()->json(compact('users'));
+        try {
+            $users=Users::find($id);
+            if(! $users){
+                return  $this->returnError("user isn't found",404);
+            }
+    
+            return $this->returnSuccess('','users',$users);
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
+        }
     }
 
     public function updateUser(Request $request,$id){
-        $emailUniqueRule=[
-            'email'=>'unique:users,email,' . $id
-        ];
-        $error=[
-            'email_unique'=>'this email is used'
-        ];
-        
-        $validator=Validator::make($request->only('email'),$emailUniqueRule);
-        if($validator->fails()){
-            return response()->json($error , 400);
+        try {
+            $photo=$request->file('photo');
+            $rules=$this->MembersRules($id,$photo,0);
+    
+            $validator=Validator::make($request->all(),$rules);
+    
+            if($validator->fails()){
+                return  $this->returnError($validator->errors(),400);
+            }
+    
+            $users=Users::find($id);
+            if(! $users){
+                return  $this->returnError("user isn't found",404);
+            }
+    
+            $fileName=$users->photo;
+            if($photo){
+                $fileName=$this->UploadPhoto($photo , 'images/users');
+            }
+            
+            $name     = filter_var($request->name       ,FILTER_SANITIZE_STRING);
+            $email    = filter_var($request->email      ,FILTER_SANITIZE_EMAIL);
+            $password = filter_var($request->password   ,FILTER_SANITIZE_STRING);
+            $photo    = filter_var($fileName            ,FILTER_SANITIZE_STRING);
+
+            $users->name     = $name;
+            $users->email    = $email;
+            $users->password = Hash::make($password);
+            $users->photo    = $photo;
+    
+            $users->save();
+            
+            return $this->returnSuccess('you successfully updated user');
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
         }
-
-        $photo=$request->file('photo');
-        $rules=$this->MembersRules($photo,$id);
-
-        $validator=Validator::make($request->all(),$rules);
-
-        if($validator->fails()){
-            return response()->json(['error at validation'] , 400);
-        }
-
-        $fileName='';
-        if($photo){
-            $fileName=$this->UploadPhoto($photo , 'images/users');
-        }
-        
-        $users=Users::find($id);
-        $users->name     = $request->name;
-        $users->email    = $request->email;
-        $users->password = $request->password;
-        $users->photo    = $fileName;
-
-        $users->save();
-        
-        return response()->json(compact('users'));
     }
 
     public function getCount(){
-		$users=Users::all();
-		$usersCount=$users->count();
-		return response()->json(compact('usersCount'));
+        try {
+            $users=Users::all();
+            $usersCount=$users->count();
+            return response()->json(compact('usersCount'));
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
+        }
+		
 	}
 }

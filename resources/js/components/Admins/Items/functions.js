@@ -77,7 +77,9 @@ export const updateitems = async (id,formData) => {
             return res;
         })
         .catch(err => {
-            console.log(err);
+            console.log(err.response)
+            throw err
+            
         });
 };
 

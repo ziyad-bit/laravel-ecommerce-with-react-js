@@ -44,5 +44,7 @@ Route::group(['prefix' => 'users', 'namespace' => 'users' , 'middleware'=>['user
 Route::group(['prefix' => 'users/comment', 'namespace' => 'users' , 'middleware'=>['usersRoutes' , 'jwt.auth'] ], function () {
     Route::get   ('get/items'              , 'ItemsController@getItem');
     Route::get   ('get/{id}'               , 'CommentController@get');
+    Route::get   ('edit/{id}'              , 'CommentController@edit');
     Route::post  ('add'                    , 'CommentController@add');
+    Route::post  ('update/{id}'                    , 'CommentController@update');
 });

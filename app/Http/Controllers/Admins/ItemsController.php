@@ -10,88 +10,147 @@ use App\Traits\ItemRules;
 use App\Traits\UploadPhoto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Traits\General;
 use Illuminate\Support\Facades\Validator;
 
 class ItemsController extends Controller
 {
     use UploadPhoto;
     use ItemRules;
+    use General;
     
+    ######################################        add            ########################## 
     public function addItem(Request $request , $id){
+        try {
+            $rules=$this->ItemRules($request->file('photo'));
 
-        $rules=$this->ItemRules();
+            $validator=Validator::make($request->all(),$rules);
+    
+            if($validator->fails()){
+                return  $this->returnError($validator->errors(),400);
+            }
+    
+            //import from trait(UploadPhoto) 
+            $fileName=$this->UploadPhoto($request->file('photo') , 'images/items');
+            
+            $name        = filter_var($request->get('name')        ,FILTER_SANITIZE_STRING);
+            $description = filter_var($request->get('description') ,FILTER_SANITIZE_STRING);
+            $price       = filter_var($request->get('price')       ,FILTER_SANITIZE_STRING);
+            $photo       = filter_var($fileName                    ,FILTER_SANITIZE_STRING);
+    
+            $items=Items::create([
+                'name'        => $name,
+                'description' => $description,
+                'status'      => $request->get('status'),
+                'price'       => $price,
+                'date'        => now(),
+                'approve'     => 1,
+                'photo'       => $photo,
+                'admins_id'   => $id,
+                'category_id' => $request->get('category_id'),
+            ]);
+    
+            return $this->returnSuccess('you successfully added item');
 
-        $validator=Validator::make($request->all(),$rules);
-
-        if($validator->fails()){
-            return response()->json(['error at validation'] , 400);
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
         }
-
-        //import from trait(UploadPhoto) 
-        $fileName=$this->UploadPhoto($request->file('photo') , 'images/items');
-        
-
-        $items=Items::create([
-            'name'        => $request->get('name'),
-            'description' => $request->get('description'),
-            'status'      => $request->get('status'),
-            'price'       => $request->get('price'),
-            'date'        => now(),
-            'approve'     => 1,
-            'photo'       => $fileName,
-            'admins_id'   => $id,
-            'category_id' => $request->get('category_id'),
-        ]
-        );
-
-
-        return response()->json(compact('items'));
     }
 
+    ######################################        get            ########################## 
     public function getItem(){
-        $items=Items::orderBy('id','desc')->paginate(5);
-        return response()->json(compact('items'));
+        try {
+            $items=Items::orderBy('id','desc')->paginate(5);
+            return $this->returnSuccess('you successfully added item','items',$items);
+        } catch (\Throwable $th) {
+            return  $this->returnError('something went wrong',500);
+        }
     }
 
+    ######################################        edit            ########################## 
     public function editItem($id){
-        $items=Items::find($id);
-        return response()->json(compact('items'));
+        try {
+            $items=Items::find($id);
+            if(!$items ){
+                return $this->returnError("this item isn't found",404);
+            }
+            return $this->returnSuccess('','item',$items);
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
+        }
     }
 
+    ######################################        updateItem            ########################## 
     public function updateItem(Request $request,$id){
-        $rules=$this->ItemRules();
+        try {
+            $photo=$request->file('photo');
+            $rules=$this->ItemRules($photo);
 
-        $validator=Validator::make($request->all(),$rules);
+            $validator=Validator::make($request->all(),$rules);
+    
+            if($validator->fails()){
+                return $this->returnError($validator->errors(),400);
+            }
 
-        if($validator->fails()){
-            return response()->json(['error at validation'] , 400);
+            $items=Items::find($id);
+            if(! $items){
+                return $this->returnError("this item isn't found",404);
+            }
+
+            $fileName=$items->$photo;
+            if($photo){
+                $fileName=$this->UploadPhoto($request->file('photo') , 'images/items');
+            }
+
+            $name        = filter_var($request->name        ,FILTER_SANITIZE_STRING);
+            $description = filter_var($request->description ,FILTER_SANITIZE_STRING);
+            $price       = filter_var($request->price       ,FILTER_SANITIZE_STRING);
+            $photo       = filter_var($fileName             ,FILTER_SANITIZE_STRING);
+
+            $items->name        = $name;
+            $items->description = $description;
+            $items->status      = $request->status;
+            $items->price       = $price;
+            $items->photo       = $photo;
+            $items->category_id = $request->category_id;
+            
+            $items->save();
+            
+            return $this->returnSuccess('you successfully updated item');
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
+        }
+    }
+
+    ######################################        delete            ########################## 
+    public function deleteItem($id){
+        try {
+            $items=Items::find($id);
+            if(! $items){
+                return $this->returnError("this item isn't found",404);
+            }
+            $items->delete();
+
+            return $this->returnSuccess('you successfully deleted item');
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
         }
         
-        $fileName=$this->UploadPhoto($request->file('photo') , 'images/items');
-
-        $items=Items::find($id);
-
-        $items->name        = $request->name;
-        $items->description = $request->description;
-        $items->status      = $request->status;
-        $items->price       = $request->price;
-        $items->photo       = $fileName;
-        $items->category_id = $request->category_id;
-        
-
-        $items->save();
-        
-        return response()->json(compact('items'));
     }
 
-    public function deleteItem($id){
-        $items=Items::find($id);
-        $items->delete();
-    }
-
+    ######################################        get count            ########################## 
     public function getCount(){
-		$items=Items::all();
-		$itemsCount=$items->count();
-		return response()->json(compact('itemsCount'));
+        try {
+            $items=Items::all();
+            $itemsCount=$items->count();
+            return response()->json(compact('itemsCount'));
+
+        } catch (\Exception $th) {
+            return  $this->returnError('something went wrong',500);
+        }
+	
 	}
 }
