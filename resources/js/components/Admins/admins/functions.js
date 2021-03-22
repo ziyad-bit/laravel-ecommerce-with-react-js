@@ -1,12 +1,11 @@
 import axios from "axios";
 
 const url   = "http://localhost:8000/api/admins/";
-const token = { Authorization: `Bearer ${localStorage.adminsToken}`};
 
 export const addAdmins = async ( formData) => {
     return await axios
-        .post(url + "add/admins" , formData, {
-            headers: token
+        .post(url + "add" , formData, {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -19,8 +18,8 @@ export const addAdmins = async ( formData) => {
 
 export const getAdmin = async () => {
     return await axios
-        .get(url + "get/admins" , {
-            headers: token
+        .get(url + "get" , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -32,7 +31,7 @@ export const getAdmin = async () => {
 
 export const getAdminCount = async () => {
     return await axios
-        .get(url + "get/admins/count" , {
+        .get(url + "get/count" , {
             headers:{ Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
@@ -45,8 +44,8 @@ export const getAdminCount = async () => {
 
 export const handlePage = async (pageNumber) => {
     return await axios
-        .get(url + "get/admins?page="+pageNumber , {
-            headers: token
+        .get(url + "get?page="+pageNumber , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -58,8 +57,8 @@ export const handlePage = async (pageNumber) => {
 
 export const deleteAdmins = async (id) => {
     return await axios
-        .delete(url + "delete/admins/"+id , {
-            headers: token
+        .delete(url + "delete/"+id , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -71,8 +70,8 @@ export const deleteAdmins = async (id) => {
 
 export const updateAdmins = async (id, formData) => {
     return await axios
-        .post(url + "update/admins/"+id , formData, {
-            headers: token
+        .post(url + "update/"+id , formData, {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;

@@ -20,7 +20,7 @@ class ItemsController extends Controller
     use General;
     
     ######################################        add            ########################## 
-    public function addItem(Request $request , $id){
+    public function addItem(Request $request ){
         try {
             $rules=$this->ItemRules($request->file('photo'));
 
@@ -38,7 +38,7 @@ class ItemsController extends Controller
             $price       = filter_var($request->get('price')       ,FILTER_SANITIZE_STRING);
             $photo       = filter_var($fileName                    ,FILTER_SANITIZE_STRING);
     
-            $items=Items::create([
+            Items::create([
                 'name'        => $name,
                 'description' => $description,
                 'status'      => $request->get('status'),
@@ -46,7 +46,7 @@ class ItemsController extends Controller
                 'date'        => now(),
                 'approve'     => 1,
                 'photo'       => $photo,
-                'admins_id'   => $id,
+                'admins_id'   => $request->admins_id,
                 'category_id' => $request->get('category_id'),
             ]);
     
@@ -61,7 +61,7 @@ class ItemsController extends Controller
     public function getItem(){
         try {
             $items=Items::orderBy('id','desc')->paginate(5);
-            return $this->returnSuccess('you successfully added item','items',$items);
+            return $this->returnSuccess('','items',$items);
         } catch (\Throwable $th) {
             return  $this->returnError('something went wrong',500);
         }
@@ -74,7 +74,7 @@ class ItemsController extends Controller
             if(!$items ){
                 return $this->returnError("this item isn't found",404);
             }
-            return $this->returnSuccess('','item',$items);
+            return $this->returnSuccess('','items',$items);
 
         } catch (\Exception $th) {
             return  $this->returnError('something went wrong',500);

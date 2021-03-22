@@ -1,12 +1,11 @@
 import axios from "axios";
 
-const url   = "http://localhost:8000/api/admins/";
-const token = { Authorization: `Bearer ${localStorage.adminsToken}`};
+const url   = "http://localhost:8000/api/admins/items/";
 
 export const additems = async (admins_id, formData) => {
     return await axios
-        .post(url + "add/items/" + admins_id, formData, {
-            headers: token
+        .post(url + "add/" + admins_id, formData, {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -18,8 +17,8 @@ export const additems = async (admins_id, formData) => {
 
 export const getitems = async () => {
     return await axios
-        .get(url + "get/items" , {
-            headers: token
+        .get(url + "get" , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -31,7 +30,7 @@ export const getitems = async () => {
 
 export const getitemsCount = async () => {
     return await axios
-        .get(url + "get/items/count" , {
+        .get(url + "get/count" , {
             headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
@@ -44,8 +43,8 @@ export const getitemsCount = async () => {
 
 export const handlePage = async (pageNumber) => {
     return await axios
-        .get(url + "get/items?page="+pageNumber , {
-            headers: token
+        .get(url + "get?page="+pageNumber , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -57,8 +56,8 @@ export const handlePage = async (pageNumber) => {
 
 export const edititems = async (id) => {
     return await axios
-        .get(url + "edit/items/"+id , {
-            headers: token
+        .get(url + "edit/"+id , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -70,8 +69,8 @@ export const edititems = async (id) => {
 
 export const updateitems = async (id,formData) => {
     return await axios
-        .post(url + "update/items/"+id ,formData, {
-            headers: token
+        .post(url + "update/"+id ,formData, {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -85,8 +84,8 @@ export const updateitems = async (id,formData) => {
 
 export const deleteitems = async (id) => {
     return await axios
-        .delete(url + "delete/items/"+id , {
-            headers: token
+        .delete(url + "delete/"+id , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;

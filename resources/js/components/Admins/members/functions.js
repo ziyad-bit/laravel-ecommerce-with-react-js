@@ -1,12 +1,11 @@
 import axios from "axios";
 
-const url   = "http://localhost:8000/api/admins/";
-const token = { Authorization: `bearer ${localStorage.adminsToken}`};
+const url   = "http://localhost:8000/api/admins/users/";
 
 export const addusers = async ( formData) => {
     return await axios
-        .post(url + "add/users" , formData, {
-            headers: token
+        .post(url + "add" , formData, {
+            headers: { Authorization: `bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -19,8 +18,8 @@ export const addusers = async ( formData) => {
 
 export const getUser = async () => {
     return await axios
-        .get(url + "get/users" , {
-            headers: token
+        .get(url + "get" , {
+            headers: { Authorization: `bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -32,7 +31,7 @@ export const getUser = async () => {
 
 export const getUserCount = async () => {
     return await axios
-        .get(url + "get/users/count" , {
+        .get(url + "get/count" , {
             headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
@@ -45,8 +44,8 @@ export const getUserCount = async () => {
 
 export const handlePage = async (pageNumber) => {
     return await axios
-        .get(url + "get/users?page="+pageNumber , {
-            headers: token
+        .get(url + "get?page="+pageNumber , {
+            headers: { Authorization: `bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -58,8 +57,8 @@ export const handlePage = async (pageNumber) => {
 
 export const deleteUsers = async (id) => {
     return await axios
-        .delete(url + "delete/users/"+id , {
-            headers: token
+        .delete(url + "delete/"+id , {
+            headers: { Authorization: `bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -71,8 +70,8 @@ export const deleteUsers = async (id) => {
 
 export const editUser = async (id) => {
     return await axios
-        .get(url + "edit/users/"+id , {
-            headers: token
+        .get(url + "edit/"+id , {
+            headers: { Authorization: `bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -84,8 +83,8 @@ export const editUser = async (id) => {
 
 export const updateUser = async (id,formData) => {
     return await axios
-        .post(url + "update/users/"+id ,formData, {
-            headers: token
+        .post(url + "update/"+id ,formData, {
+            headers: { Authorization: `bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;

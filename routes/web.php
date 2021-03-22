@@ -12,7 +12,14 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/change-password/{email}', function () {
+    return view('auth.reset_password');
+});
+
 
 Route::get('/{path}', function () {
     return view('welcome');
 })->where('path','.*');
+
+;
+

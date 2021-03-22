@@ -1,12 +1,11 @@
 import axios from "axios";
 
-const url   = "http://localhost:8000/api/admins/";
-const token = { Authorization: `Bearer ${localStorage.adminsToken}`};
+const url   = "http://localhost:8000/api/admins/category/";
 
 export const addCategories = async ( formData) => {
     return await axios
-        .post(url + "add/category" , formData, {
-            headers: token
+        .post(url + "add" , formData, {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -19,8 +18,8 @@ export const addCategories = async ( formData) => {
 
 export const getCategories = async ( ) => {
     return await axios
-        .get(url + "get/category" , {
-            headers: token
+        .get(url + "get" , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -33,8 +32,8 @@ export const getCategories = async ( ) => {
 
 export const editCategories = async (id ) => {
     return await axios
-        .get(url + "edit/category/"+id , {
-            headers: token
+        .get(url + "edit/"+id , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -47,8 +46,8 @@ export const editCategories = async (id ) => {
 
 export const updateCategories = async ( id,formData) => {
     return await axios
-        .post(url + "update/category/"+id ,formData, {
-            headers: token
+        .post(url + "update/"+id ,formData, {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -61,8 +60,8 @@ export const updateCategories = async ( id,formData) => {
 
 export const updatePhoto = async ( id,formData) => {
     return await axios
-        .post(url + "update/photo/"+id ,formData, {
-            headers: token
+        .post(url + "update/"+id ,formData, {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -75,8 +74,8 @@ export const updatePhoto = async ( id,formData) => {
 
 export const deleteCategories = async ( id) => {
     return await axios
-        .delete(url + "delete/category/"+id , {
-            headers: token
+        .delete(url + "delete/"+id , {
+            headers: { Authorization: `Bearer ${localStorage.adminsToken}`}
         })
         .then(res => {
             return res;
@@ -89,7 +88,7 @@ export const deleteCategories = async ( id) => {
 
 export const handlePage = async (pageNumber) => {
     return await axios
-        .get(url + "get/category?page="+pageNumber , {
+        .get(url + "get?page="+pageNumber , {
             headers: token
         })
         .then(res => {

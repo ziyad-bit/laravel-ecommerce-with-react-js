@@ -13,7 +13,7 @@ class Users extends Authenticatable implements JWTSubject
     // Rest omitted for brevity
     protected $table='users';
     protected $fillable=['name','email','password','date','photo','approve'];
-    protected $hidden=['password','remember_token'];
+    protected $hidden=['password'];
 
     public function comment(){
         return $this->hasMany('App\Models\Comment','user_id');

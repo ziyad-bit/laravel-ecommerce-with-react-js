@@ -34,7 +34,7 @@ class MembersController extends Controller
             }
 
             $name     = filter_var($request->get('name')        ,FILTER_SANITIZE_STRING);
-            $email    = filter_var($request->get('email')       ,FILTER_SANITIZE_STRING);
+            $email    = filter_var($request->get('email')       ,FILTER_SANITIZE_EMAIL);
             $password = filter_var($request->get('password')    ,FILTER_SANITIZE_STRING);
             $photo    = filter_var($fileName                    ,FILTER_SANITIZE_STRING);
             

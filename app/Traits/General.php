@@ -10,7 +10,7 @@ trait General{
         ],$statusCode);
     }
     
-    public function returnSuccess($msg,$key=null,$value=null,$statusCode=200){
+    public function returnSuccess($msg,$key='data',$value=null,$statusCode=200){
         return response()->json([
             'status'     => true,
             'msg'        => $msg,

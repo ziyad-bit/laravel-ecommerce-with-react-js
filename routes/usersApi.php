@@ -16,14 +16,15 @@ use Illuminate\Support\Facades\Route;
 
 ###################      login and sign up       ##################
 Route::group(['prefix' => 'users', 'namespace' => 'users'], function () {
-    Route::post('login'   , 'UsersController@userLogin');
-    Route::post('signup'  , 'UsersController@addUser');
+    Route::post('login'           , 'UsersController@userLogin');
+    Route::post('signup'          , 'UsersController@add');
+    Route::post('forget/password' , 'UsersController@forgetPassword');
+    Route::post('reset/password'  , 'UsersController@resetPassword');
 });
 
 ###################      users      ##################
 Route::group(['prefix' => 'users', 'namespace' => 'users', 'middleware'=>['usersRoutes' , 'jwt.auth']], function () {
     Route::get ('get/authuser'   , 'UsersController@getAuthenticatedUser');
-    Route::post('signup'         , 'UsersController@addUser');
 });
 
 ###################       category              ###################

@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Traits\General;
-use Exception;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Hash;
@@ -78,7 +77,7 @@ class AdminsController extends Controller
 public function addAdmins(Request $request ){
 	try {
 		//import from trait(MembersRules)
-		$rules=$this->MembersRules($request);
+		$rules=$this->MembersRules();
 
 		$validator=Validator::make($request->all(),$rules);
 
@@ -90,7 +89,7 @@ public function addAdmins(Request $request ){
 		$email    = filter_var($request->get('email')    ,FILTER_SANITIZE_EMAIL);
 		$password = filter_var($request->get('password') ,FILTER_SANITIZE_STRING);
 
-		$admins=Admins::create([
+		Admins::create([
 			'name'     => $name,
 			'email'    => $email,
 			'password' => Hash::make($password),
@@ -124,6 +123,7 @@ public function addAdmins(Request $request ){
 				return $this->returnError("admin isn't found",404);
 			}
 			$admin->delete();
+			return $this->returnSuccess('you successfully deleted admin');
 
 		} catch (\Exception $th) {
 			return $this->returnError("something went wrong",500);
@@ -156,7 +156,7 @@ public function addAdmins(Request $request ){
 	
 			$admins->save();
 			
-			return response()->json(compact('admins'));
+			return $this->returnSuccess('you successfully updated admin');
 
 		} catch (\Exception $th) {
 			return $this->returnError("something went wrong",500);
@@ -169,7 +169,7 @@ public function addAdmins(Request $request ){
 			$admins=Admins::all();
 			$adminsCount=$admins->count();
 
-			return response()->json(compact('adminsCount'));
+			return $this->returnSuccess('','adminsCount',$adminsCount);
 
 		} catch (\Exception $th) {
 			return $this->returnError("something went wrong",500);

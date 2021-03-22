@@ -20,7 +20,7 @@ class CategoryController extends Controller
     public function addCategory(Request $request){
         try {
             //import from trait(CategoryRules)
-            $rules=$this->CategoryRules($request);
+            $rules=$this->CategoryRules(null,$request);
 
             $validator=Validator::make($request->all(),$rules);
 
@@ -67,6 +67,8 @@ class CategoryController extends Controller
                 $this->returnError("category isn't found",404);
             }
             $categories->delete();
+            
+            return $this->returnSuccess('you successfully deleted category');
 
         } catch (\Exception $th) {
             return $this->returnError('something went wrong',500);
