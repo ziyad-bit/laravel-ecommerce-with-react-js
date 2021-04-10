@@ -1,0 +1,20 @@
+.total{
+    color: white;
+}
+
+.total:hover{
+    color:#2ecc71 ;
+}
+
+.link{
+    text-decoration: none !important;
+}
+
+.home2{
+    margin-top: 40px;
+    margin-left: 100px !important;
+}
+
+.number{
+    margin-left: 50px;
+}
