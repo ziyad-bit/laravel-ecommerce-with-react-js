@@ -27,25 +27,4 @@ Route::group(['prefix' => 'users', 'namespace' => 'users', 'middleware'=>['users
     Route::get ('get/authuser'   , 'UsersController@getAuthenticatedUser');
 });
 
-###################       category              ###################
-Route::group(['prefix' => 'users', 'namespace' => 'users' , 'middleware'=>['usersRoutes' , 'jwt.auth'] ], function () {
-    Route::get   ('get/category'              , 'CategoryController@getCategory');
-    Route::get   ('get/category/items/{id}'   , 'CategoryController@getCategoryItems');
-    Route::get   ('get/category/items/{id}'   , 'CategoryController@getCategoryItems');
-});
 
-###################       items              ###################
-Route::group(['prefix' => 'users', 'namespace' => 'users' , 'middleware'=>['usersRoutes' , 'jwt.auth'] ], function () {
-    Route::get   ('get/items'              , 'ItemsController@getItem');
-    Route::get   ('get/items/{id}'         , 'ItemsController@getItemDetails');
-    Route::post  ('add/items/{id}'         , 'ItemsController@addItem');
-});
-
-###################       comments              ###################
-Route::group(['prefix' => 'users/comment', 'namespace' => 'users' , 'middleware'=>['usersRoutes' , 'jwt.auth'] ], function () {
-    Route::get   ('get/items'              , 'ItemsController@getItem');
-    Route::get   ('get/{id}'               , 'CommentController@get');
-    Route::get   ('edit/{id}'              , 'CommentController@edit');
-    Route::post  ('add'                    , 'CommentController@add');
-    Route::post  ('update/{id}'                    , 'CommentController@update');
-});
