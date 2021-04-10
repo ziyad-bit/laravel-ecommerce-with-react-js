@@ -155,14 +155,6 @@ public function verify()
 public function forgetPassword(Request $request)
 {
     try {
-        $rule        = ['email'=>'required|email|min:5'];
-        $credentials = $request->only('email');
-
-        $validator=validator::make($credentials,$rule);
-        if($validator->fails()){
-            return $this->returnError($validator->errors(),400);
-        }
-
         $email=$request->email;
         $user=Users::whereEmail($email)->first();
         if(! $user){
