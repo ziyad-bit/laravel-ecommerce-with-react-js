@@ -12,7 +12,7 @@ class Users extends Authenticatable implements JWTSubject
 
     // Rest omitted for brevity
     protected $table='users';
-    protected $fillable=['name','email','password','date','photo','approve'];
+    protected $fillable=['name','email','password','date','photo','approve','active'];
     protected $hidden=['password'];
 
     public function comment(){

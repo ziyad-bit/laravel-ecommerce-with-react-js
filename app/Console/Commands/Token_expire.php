@@ -48,6 +48,5 @@ class Token_expire extends Command
                 $token_id->delete();
             }
         }
-
     }
 }

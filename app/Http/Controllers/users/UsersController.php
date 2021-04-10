@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\users;
 
-use DateTime;
-use Carbon\Carbon;
+use DB;
 use App\Models\Users;
-use App\Mail\SendMail;
 use App\Traits\General;
+use App\Mail\VerifyMail;
 use App\Traits\UploadPhoto;
 use Illuminate\Support\Str;
+use App\Models\Verify_email;
 use App\Traits\MembersRules;
 use Illuminate\Http\Request;
+use App\Mail\ResetPasswordMail;
 use App\Models\Password_resets;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -35,6 +35,7 @@ class UsersController extends Controller
     ######################################        add            ########################## 
     public function add(Request $request ){
         try {
+            DB::beginTransaction();
             //import from trait(MembersRules)
             $rules=$this->MembersRules(null,null,0);
 
@@ -48,19 +49,67 @@ class UsersController extends Controller
             $email    = filter_var($request->email      ,FILTER_SANITIZE_EMAIL);
             $password = filter_var($request->password   ,FILTER_SANITIZE_STRING);
 
-            Users::create([
+            $user=Users::create([
                 'name'     => $name,
                 'email'    => $email,
                 'password' => Hash::make($password),
                 'date'     => now(),
             ]);
+            
+            $token=Str::random(60);
+            Verify_email::create([
+                'token'      => $token,
+                'email'      => $email,
+            ]);
 
-            return $this->returnSuccess('you successfully added user');
+            $email=$user->email;
+            Mail::to($email)->send(new VerifyMail($email,$token));
+
+            return $this->returnSuccess('we sent link to verify your email');
+            
+            DB::commit();
 
         } catch (\Exception $th) {
+            DB::rollBack();
             return  $this->returnError('something went wrong',500);
         }
     }
+
+    ######################################        verify            ########################## 
+public function verify()
+{
+    try {
+        DB::beginTransaction();
+
+        $email=request('email');
+        $token=request('token');
+    
+        $email_token=Verify_email::where([
+            'email'=>$email,
+            'token'=>$token,
+        ]);
+    
+        $email_token_first=$email_token->first();
+        if(! $email_token_first){
+            return  $this->returnError('incorrect email',404);
+        }
+    
+        $user=Users::whereEmail($email)->first();
+        $user->update([
+            'active'=>1
+        ]);
+    
+        $email_token->delete();
+    
+        return $this->returnSuccess('you are verified');
+        
+        DB::commit();
+
+    } catch (\Exception $th) {
+        DB::rollBack();
+        return  $this->returnError('something went wrong',500);
+    }
+}
 
     ######################################        login            ########################## 
     public function userLogin(Request $request){
@@ -102,80 +151,86 @@ class UsersController extends Controller
 	}
 }
 
+######################################        forget password           ########################## 
 public function forgetPassword(Request $request)
 {
-    
-    
-    
-    $rule        = ['email'=>'required|email|min:5'];
-    $credentials = $request->only('email');
+    try {
+        $rule        = ['email'=>'required|email|min:5'];
+        $credentials = $request->only('email');
 
-    $validator=validator::make($credentials,$rule);
-    if($validator->fails()){
-        return $this->returnError($validator->errors(),400);
-    }
+        $validator=validator::make($credentials,$rule);
+        if($validator->fails()){
+            return $this->returnError($validator->errors(),400);
+        }
 
-    $email=$request->email;
-    $user=Users::whereEmail($email)->first();
-    if(! $user){
-        return $this->returnError('incorrect email',404);
-    }
+        $email=$request->email;
+        $user=Users::whereEmail($email)->first();
+        if(! $user){
+            return $this->returnError('incorrect email',404);
+        }
 
-    $token = $this->generateToken($email);
-    Mail::to($email)->send(new SendMail($token,$email));
+        $token=Str::random(40);
+        Password_resets::create([
+            'token'      => $token,
+            'email'      => $email,
+        ]);
 
-    return $this->returnSuccess('reset password link is sent to your email');
-}
+        Mail::to($email)->send(new ResetPasswordMail($token,$email));
 
-public function generateToken($email)
-{
-    $token = Str::random(40);
-    Password_resets::create([
-        'token'      => $token,
-        'email'      => $email,
+        return $this->returnSuccess('reset password link is sent to your email and this link will expire after 60 mins');
         
-    ]);
+    } catch (\Exception $th) {
+        return $this->returnError('something went wrong',500);
+    }
     
-    return $token;
 }
 
-
-
+######################################        reset password            ########################## 
 public function resetPassword(Request $request)
 {
-    $rule        = [
-        'email'    => 'required|email|min:5',
-        'password' => 'required|string|min:6|confirmed',
-        'token'    => 'required|string',
-    ];
+    try {
+        DB::beginTransaction();
 
-    $validator=validator::make($request->all(),$rule);
-    if($validator->fails()){
-        return $this->returnError($validator->errors(),400);
-    }
+        $rule        = [
+            'email'    => 'required|email|min:5',
+            'password' => 'required|string|min:6|confirmed',
+            'token'    => 'required|string',
+        ];
+    
+        $validator=validator::make($request->all(),$rule);
+        if($validator->fails()){
+            return $this->returnError($validator->errors(),400);
+        }
+    
+        $email=$request->email;
+        $token=$request->token;
+        $token_email=Password_resets::where([
+            'email'=>$email,
+            'token'=>$token
+        ]);
+    
+        $token_email_first=$token_email->first();
+        if(! $token_email_first){
+            return $this->returnError('incorrect email or token',400);
+        }
+        
+    
+        $user=Users::whereEmail($email)->first();
+        $user->update([
+            'password'=>Hash::make($request->password)
+        ]);
+    
+        $token_email->delete();
+    
+        return $this->returnSuccess('you successfully changed password');
+        
+        DB::commit();
 
-    $email=$request->email;
-    $token=$request->token;
-    $token_email=Password_resets::where([
-        'email'=>$email,
-        'token'=>$token
-    ]);
-
-    $token_email_first=$token_email->first();
-
-    if(! $token_email_first){
-        return $this->returnError('incorrect email or token',400);
+    } catch (\Exception $th) {
+        DB::rollBack();
+        return $this->returnError('something went wrong',500);
     }
     
-
-    $user=Users::whereEmail($email)->first();
-    $user->update([
-        'password'=>Hash::make($request->password)
-    ]);
-
-    $token_email->delete();
-
-    return $this->returnSuccess('you successfully changed password');
 }
 
 }

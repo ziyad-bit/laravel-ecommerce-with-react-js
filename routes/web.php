@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\users\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +17,12 @@ Route::get('/change-password/{email}', function () {
     return view('auth.reset_password');
 });
 
+Route::get('/verify/{email}', [UsersController::class, 'verify']);
+
 
 Route::get('/{path}', function () {
     return view('welcome');
 })->where('path','.*');
 
-;
+
 
