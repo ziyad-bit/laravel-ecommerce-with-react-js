@@ -1,3 +1,4 @@
+
 @component('mail::message')
 # verify your email
 

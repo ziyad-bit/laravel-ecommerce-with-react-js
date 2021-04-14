@@ -19,7 +19,7 @@ class Verify
     public function handle($request, Closure $next)
     {
         if (! $user = JWTAuth::parseToken()->authenticate()) {
-			return  $this->returnError("user isn't found",404);
+			return  $this->returnError("unauthenticated",401);
 		}
         if($user->active != 1){
             return $this->returnError("you should verify your email",401);

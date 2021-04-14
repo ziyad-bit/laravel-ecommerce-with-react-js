@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Models\Admins;
-use App\Traits\UploadPhoto;
-use App\Traits\MembersRules;
+use App\Traits\{UploadPhoto,MembersRules,General};
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
-use App\Traits\General;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Validator,Hash};
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Illuminate\Support\Facades\Hash;
 
 class AdminsController extends Controller
 {
@@ -20,7 +17,8 @@ class AdminsController extends Controller
 	use General;
 
 #######################################       login        ##############################
-    public function adminsLogin(Request $request){
+    public function adminsLogin(Request $request)
+	{
         try{
 			$credentials=$request->all();
             if(! $token = JWTAuth::attempt($credentials)){
@@ -35,7 +33,8 @@ class AdminsController extends Controller
     }
 
 #######################################       logout        ##############################
-	public function adminsLogout(Request $request){
+	public function adminsLogout(Request $request)
+	{
         try{
 			$token=$request->header('adminsToken');
 			JWTAuth::setToken($token)->invalidate();
@@ -49,62 +48,63 @@ class AdminsController extends Controller
 
 #######################################       get authenticated admin     ##############################
     public function getAuthenticatedAdmin()
-{
-	try {
+	{
+		try {
 
-		if (! $admin = JWTAuth::parseToken()->authenticate()) {
-			return $this->returnError("user isn't found",404);
+			if (! $admin = JWTAuth::parseToken()->authenticate()) {
+				return $this->returnError("user isn't found",404);
+			}
+
+			return $this->returnSuccess('','admin',$admin);
+
+		} catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+
+			return $this->returnError("token is expired",$e->getStatusCode());
+
+		} catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+
+			return $this->returnError("token is invalid",$e->getStatusCode());
+
+		} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+
+			return $this->returnError("token is absent",$e->getStatusCode());
 		}
-
-		return $this->returnSuccess('','admin',$admin);
-
-	} catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-
-		return $this->returnError("token is expired",$e->getStatusCode());
-
-	} catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-
-		return $this->returnError("token is invalid",$e->getStatusCode());
-
-	} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-
-		return $this->returnError("token is absent",$e->getStatusCode());
 	}
-
-}
 
 #######################################       add         ##############################
-public function addAdmins(Request $request ){
-	try {
-		//import from trait(MembersRules)
-		$rules=$this->MembersRules();
+	public function addAdmins(Request $request )
+	{
+		try {
+			//import from trait(MembersRules)
+			$rules=$this->MembersRules();
 
-		$validator=Validator::make($request->all(),$rules);
+			$validator=Validator::make($request->all(),$rules);
 
-		if($validator->fails()){
-			return $this->returnError($validator->errors(),400);
+			if($validator->fails()){
+				return $this->returnError($validator->errors(),400);
+			}
+
+			$name     = filter_var($request->get('name')     ,FILTER_SANITIZE_STRING);
+			$email    = filter_var($request->get('email')    ,FILTER_SANITIZE_EMAIL);
+			$password = filter_var($request->get('password') ,FILTER_SANITIZE_STRING);
+
+			Admins::create([
+				'name'     => $name,
+				'email'    => $email,
+				'password' => Hash::make($password),
+			]);
+
+			return $this->returnSuccess('you successfully added admin');
+
+		} catch (\Exception $th) {
+			return $this->returnError('something went wrong',500);
 		}
-
-		$name     = filter_var($request->get('name')     ,FILTER_SANITIZE_STRING);
-		$email    = filter_var($request->get('email')    ,FILTER_SANITIZE_EMAIL);
-		$password = filter_var($request->get('password') ,FILTER_SANITIZE_STRING);
-
-		Admins::create([
-			'name'     => $name,
-			'email'    => $email,
-			'password' => Hash::make($password),
-		]);
-
-		return $this->returnSuccess('you successfully added admin');
-
-	} catch (\Exception $th) {
-		return $this->returnError('something went wrong',500);
-	}
 	
-}
+	}
 
 #######################################       get all admins        ##############################
-	public function getAdmin(){
+	public function getAdmin()
+	{
 		try {
 			$admins=Admins::orderBy('id','desc')->paginate(1);
 			return $this->returnSuccess('','admins',$admins);
@@ -116,7 +116,8 @@ public function addAdmins(Request $request ){
 	}
 
 	#######################################       delete         ##############################
-	public function deleteAdmin($id){
+	public function deleteAdmin($id)
+	{
 		try {
 			$admin=Admins::find($id);
 			if(! $admin){
@@ -132,7 +133,8 @@ public function addAdmins(Request $request ){
 	}
 	
 	#######################################       update        ##############################
-	public function updateAdmin(Request $request,$id){
+	public function updateAdmin(Request $request,$id)
+	{
 		try {
 			$rules=$this->MembersRules($id);
 
@@ -164,7 +166,8 @@ public function addAdmins(Request $request ){
 	}
 	
 	#######################################       get count        ##############################
-	public function getCount(){
+	public function getCount()
+	{
 		try {
 			$admins=Admins::all();
 			$adminsCount=$admins->count();

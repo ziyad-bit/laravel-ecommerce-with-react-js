@@ -2,21 +2,22 @@
 
 namespace App\Traits;
 
-trait General{
-    public function returnError($msg,$statusCode){
+trait General
+{
+    public function returnError($msg , int $statusCode)
+    {
         return response()->json([
-            'status'     => false,
-            'msg'        => $msg,
+            'status'    => false,
+            'error_msg' => $msg,
         ],$statusCode);
     }
     
-    public function returnSuccess($msg,$key='data',$value=null,$statusCode=200){
+    public function returnSuccess(string $msg ,string $key='data' , $value=null ,int $statusCode=200)
+    {
         return response()->json([
-            'status'     => true,
-            'msg'        => $msg,
-            $key         => $value,
+            'status'      => true,
+            'success_msg' => $msg,
+            $key          => $value,
         ],$statusCode);
     }
-
-    
 }

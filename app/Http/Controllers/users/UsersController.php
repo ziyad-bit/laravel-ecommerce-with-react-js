@@ -2,24 +2,17 @@
 
 namespace App\Http\Controllers\users;
 
+
 use DB;
-use App\Models\Users;
-use App\Traits\General;
-use App\Mail\VerifyMail;
-use App\Traits\UploadPhoto;
+use App\Traits\{General , UploadPhoto , MembersRules};
+use App\Mail\{VerifyMail , ResetPasswordMail};
 use Illuminate\Support\Str;
-use App\Models\Verify_email;
-use App\Traits\MembersRules;
 use Illuminate\Http\Request;
-use App\Mail\ResetPasswordMail;
-use App\Models\Password_resets;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Auth , Validator , Mail , Hash};
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Models\{Users , Verify_email , Password_resets};
 
 class UsersController extends Controller
 {
@@ -32,8 +25,9 @@ class UsersController extends Controller
         Auth::shouldUse('users');
     }
 
-    ######################################        add            ########################## 
-    public function add(Request $request ){
+######################################        add            ########################## 
+    public function add(Request $request)
+    {
         try {
             DB::beginTransaction();
             //import from trait(MembersRules)
@@ -65,9 +59,9 @@ class UsersController extends Controller
             $email=$user->email;
             Mail::to($email)->send(new VerifyMail($email,$token));
 
-            return $this->returnSuccess('we sent link to verify your email');
-            
             DB::commit();
+
+            return $this->returnSuccess('we sent link to verify your email');
 
         } catch (\Exception $th) {
             DB::rollBack();
@@ -76,43 +70,44 @@ class UsersController extends Controller
     }
 
     ######################################        verify            ########################## 
-public function verify()
-{
-    try {
-        DB::beginTransaction();
+    public function verify()
+    {
+        try {
+            DB::beginTransaction();
 
-        $email=request('email');
-        $token=request('token');
-    
-        $email_token=Verify_email::where([
-            'email'=>$email,
-            'token'=>$token,
-        ]);
-    
-        $email_token_first=$email_token->first();
-        if(! $email_token_first){
-            return  $this->returnError('incorrect email',404);
-        }
-    
-        $user=Users::whereEmail($email)->first();
-        $user->update([
-            'active'=>1
-        ]);
-    
-        $email_token->delete();
-    
-        return $this->returnSuccess('you are verified');
+            $email=request('email');
+            $token=request('token');
         
-        DB::commit();
+            $email_token=Verify_email::where([
+                'email'=>$email,
+                'token'=>$token,
+            ]);
+        
+            $email_token_first=$email_token->first();
+            if(! $email_token_first){
+                return  $this->returnError('incorrect email',404);
+            }
+        
+            $user=Users::whereEmail($email)->first();
+            $user->update([
+                'active'=>1
+            ]);
+        
+            $email_token->delete();
+        
+            DB::commit();
 
-    } catch (\Exception $th) {
-        DB::rollBack();
-        return  $this->returnError('something went wrong',500);
+            return $this->returnSuccess('you are verified');
+
+        } catch (\Exception $th) {
+            DB::rollBack();
+            return  $this->returnError('something went wrong',500);
+        }
     }
-}
 
-    ######################################        login            ########################## 
-    public function userLogin(Request $request){
+######################################        login            ########################## 
+    public function userLogin(Request $request)
+    {
         try{
             $credentials=$request->all();
             if(! $user_token = JWTAuth::attempt($credentials)){
@@ -126,30 +121,30 @@ public function verify()
         }
     }
 
-    ######################################        get auth user            ########################## 
+######################################        get auth user            ########################## 
     public function getAuthenticatedUser()
-{
-	try {
-		if (! $user = JWTAuth::parseToken()->authenticate()) {
-			return  $this->returnError("user isn't found",404);
-		}
+    {
+        try {
+            if (! $user = JWTAuth::parseToken()->authenticate()) {
+                return  $this->returnError("user isn't found",404);
+            }
 
-        return $this->returnSuccess('','user',$user);
+            return $this->returnSuccess('','user',$user);
 
-	} catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
 
-		return  $this->returnError("token is expired",$e->getStatusCode());
+            return  $this->returnError("token is expired",$e->getStatusCode());
 
-	} catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
 
-		return  $this->returnError("invalid token",$e->getStatusCode());
+            return  $this->returnError("invalid token",$e->getStatusCode());
 
-	} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
 
-		return  $this->returnError("token is absent",$e->getStatusCode());
+            return  $this->returnError("token is absent",$e->getStatusCode());
 
-	}
-}
+        }
+    }
 
 ######################################        forget password           ########################## 
 public function forgetPassword(Request $request)
@@ -178,51 +173,50 @@ public function forgetPassword(Request $request)
 }
 
 ######################################        reset password            ########################## 
-public function resetPassword(Request $request)
-{
-    try {
-        DB::beginTransaction();
+    public function resetPassword(Request $request)
+    {
+        try {
+            DB::beginTransaction();
 
-        $rule        = [
-            'email'    => 'required|email|min:5',
-            'password' => 'required|string|min:6|confirmed',
-            'token'    => 'required|string',
-        ];
-    
-        $validator=validator::make($request->all(),$rule);
-        if($validator->fails()){
-            return $this->returnError($validator->errors(),400);
-        }
-    
-        $email=$request->email;
-        $token=$request->token;
-        $token_email=Password_resets::where([
-            'email'=>$email,
-            'token'=>$token
-        ]);
-    
-        $token_email_first=$token_email->first();
-        if(! $token_email_first){
-            return $this->returnError('incorrect email or token',400);
+            $rule        = [
+                'email'    => 'required|email|min:5',
+                'password' => 'required|string|min:6|confirmed',
+                'token'    => 'required|string',
+            ];
+        
+            $validator=validator::make($request->all(),$rule);
+            if($validator->fails()){
+                return $this->returnError($validator->errors(),400);
+            }
+        
+            $email=$request->email;
+            $token=$request->token;
+            $token_email=Password_resets::where([
+                'email'=>$email,
+                'token'=>$token
+            ]);
+        
+            $token_email_first=$token_email->first();
+            if(! $token_email_first){
+                return $this->returnError('incorrect email or token',400);
+            }
+            
+        
+            $user=Users::whereEmail($email)->first();
+            $user->update([
+                'password'=>Hash::make($request->password)
+            ]);
+        
+            $token_email->delete();
+        
+            DB::commit();
+
+            return $this->returnSuccess('you successfully changed password');
+
+        } catch (\Exception $th) {
+            DB::rollBack();
+            return $this->returnError('something went wrong',500);
         }
         
-    
-        $user=Users::whereEmail($email)->first();
-        $user->update([
-            'password'=>Hash::make($request->password)
-        ]);
-    
-        $token_email->delete();
-    
-        return $this->returnSuccess('you successfully changed password');
-        
-        DB::commit();
-
-    } catch (\Exception $th) {
-        DB::rollBack();
-        return $this->returnError('something went wrong',500);
     }
-    
-}
-
 }

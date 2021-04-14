@@ -2,8 +2,10 @@
 
 namespace App\Traits;
 
-trait CategoryRules{
-    public function CategoryRules($id=null,$photo=null){
+trait CategoryRules
+{
+    public function CategoryRules(int $id=null , $photo=null):array
+    {
         if($photo){
             $photoRules='required|image|mimes:jpg,jpeg,gif,png|max:14';
         }else{
@@ -18,5 +20,4 @@ trait CategoryRules{
         
         return $rules;
     }
-    
 }

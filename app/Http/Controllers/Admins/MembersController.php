@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Models\Users;
-use App\Traits\UploadPhoto;
-use App\Traits\MembersRules;
+use App\Traits\{UploadPhoto , MembersRules};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Hash,Validator};
 
 class MembersController extends Controller
 {
@@ -16,7 +14,8 @@ class MembersController extends Controller
     use MembersRules;
     
     ######################################        add            ################################# 
-    public function addUser(Request $request){
+    public function addUser(Request $request)
+    {
         try {
             //import from trait(MembersRules)
             $rules=$this->MembersRules(null,$request,0);
@@ -56,7 +55,8 @@ class MembersController extends Controller
     }
 
     ######################################        get            ############################ 
-    public function getUser(){
+    public function getUser()
+    {
         try {
             $users=Users::orderBy('id','desc')->paginate(2);
             return $this->returnSuccess('','users',$users);
@@ -67,7 +67,8 @@ class MembersController extends Controller
     }
 
     ######################################        delete            ########################## 
-    public function deleteUser($id){
+    public function deleteUser($id)
+    {
         try {
             $users=Users::find($id);
             if(! $users){
@@ -83,7 +84,8 @@ class MembersController extends Controller
     }
 
     ######################################        edit            ########################## 
-    public function editUser($id){
+    public function editUser($id)
+    {
         try {
             $users=Users::find($id);
             if(! $users){
@@ -98,7 +100,8 @@ class MembersController extends Controller
     }
 
     ######################################        update            ########################## 
-    public function updateUser(Request $request,$id){
+    public function updateUser(Request $request,$id)
+    {
         try {
             $photo=$request->file('photo');
             $rules=$this->MembersRules($id,$photo,0);
@@ -139,7 +142,8 @@ class MembersController extends Controller
     }
 
     ######################################        get count            ########################## 
-    public function getCount(){
+    public function getCount()
+    {
         try {
             $users=Users::all();
             $usersCount=$users->count();

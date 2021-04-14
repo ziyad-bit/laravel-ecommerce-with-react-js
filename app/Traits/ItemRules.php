@@ -2,8 +2,10 @@
 
 namespace App\Traits;
 
-trait ItemRules{
-    public function ItemRules($photo=null){
+trait ItemRules
+{
+    public function ItemRules($photo=null):array
+    {
         if($photo){
             $photo_rule='required|image|mimes:jpg,jpeg,gif,png|max:14048';
         }else{
@@ -20,5 +22,4 @@ trait ItemRules{
         ];
         return $rules;
     }
-    
 }

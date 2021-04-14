@@ -4,8 +4,10 @@ namespace App\Traits;
 
 
 
-trait MembersRules{
-    public function MembersRules($id=null,$photo=null,$admins=1){
+trait MembersRules
+{
+    public function MembersRules(int $id=null,$photo=null,int $admins=1):array
+    {
         if($photo){
             $photoRules='image|mimes:jpg,jpeg,gif,png|max:14048';
         }else{
@@ -26,5 +28,4 @@ trait MembersRules{
         ];
         return $rules;
     }
-    
 }

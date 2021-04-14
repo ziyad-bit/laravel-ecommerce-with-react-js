@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Models\Category;
-use App\Traits\UploadPhoto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Traits\CategoryRules;
-use App\Traits\General;
+use App\Traits\{CategoryRules,General,UploadPhoto};
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
@@ -17,7 +15,8 @@ class CategoryController extends Controller
     use General;
     
     ########################################       add      #############################
-    public function addCategory(Request $request){
+    public function addCategory(Request $request)
+    {
         try {
             //import from trait(CategoryRules)
             $rules=$this->CategoryRules(null,$request);
@@ -49,7 +48,8 @@ class CategoryController extends Controller
     }
 
     ########################################       get      #############################
-    public function getCategory(){
+    public function getCategory()
+    {
         try {
             $categories=Category::paginate(5);
             return $this->returnSuccess('','categories',$categories);
@@ -60,7 +60,8 @@ class CategoryController extends Controller
     }
 
     ########################################       delete      #############################
-    public function deleteCategory($id){
+    public function deleteCategory($id)
+    {
         try {
             $categories=Category::find($id);
             if(! $categories){
@@ -77,7 +78,8 @@ class CategoryController extends Controller
     }
 
     ########################################       update      #############################
-    public function updateCategory(Request $request ,$id){
+    public function updateCategory(Request $request ,$id)
+    {
         try {
              //import from trait(CategoryRules)
             $rules=$this->CategoryRules($id,$request->file('photo'));
@@ -107,7 +109,8 @@ class CategoryController extends Controller
     }
 
     ########################################       update photo      #############################
-    public function updatePhoto(Request $request ,$id){
+    public function updatePhoto(Request $request ,$id)
+    {
         try {
             //import from trait(CategoryRules)
             $rules=$this->CategoryRules(null,$request->file('photo') );
@@ -139,7 +142,8 @@ class CategoryController extends Controller
     }
 
     ########################################       edit     #############################
-    public function editCategory($id){
+    public function editCategory($id)
+    {
         try {
             $category=Category::find($id);
             if(! $category){
@@ -153,5 +157,4 @@ class CategoryController extends Controller
         }
         
     }
-    
 }

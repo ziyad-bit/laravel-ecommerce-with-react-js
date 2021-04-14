@@ -3,14 +3,9 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Models\Items;
-
-
-
-use App\Traits\ItemRules;
-use App\Traits\UploadPhoto;
+use App\Traits\{ItemRules , UploadPhoto , General};
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Traits\General;
 use Illuminate\Support\Facades\Validator;
 
 class ItemsController extends Controller
@@ -20,7 +15,8 @@ class ItemsController extends Controller
     use General;
     
     ######################################        add            ########################## 
-    public function addItem(Request $request ){
+    public function addItem(Request $request)
+    {
         try {
             $rules=$this->ItemRules($request->file('photo'));
 
@@ -58,7 +54,8 @@ class ItemsController extends Controller
     }
 
     ######################################        get            ########################## 
-    public function getItem(){
+    public function getItem()
+    {
         try {
             $items=Items::orderBy('id','desc')->paginate(5);
             return $this->returnSuccess('','items',$items);
@@ -68,7 +65,8 @@ class ItemsController extends Controller
     }
 
     ######################################        edit            ########################## 
-    public function editItem($id){
+    public function editItem($id)
+    {
         try {
             $items=Items::find($id);
             if(!$items ){
@@ -82,7 +80,8 @@ class ItemsController extends Controller
     }
 
     ######################################        updateItem            ########################## 
-    public function updateItem(Request $request,$id){
+    public function updateItem(Request $request,$id)
+    {
         try {
             $photo=$request->file('photo');
             $rules=$this->ItemRules($photo);
@@ -125,7 +124,8 @@ class ItemsController extends Controller
     }
 
     ######################################        delete            ########################## 
-    public function deleteItem($id){
+    public function deleteItem($id)
+    {
         try {
             $items=Items::find($id);
             if(! $items){
@@ -142,7 +142,8 @@ class ItemsController extends Controller
     }
 
     ######################################        get count            ########################## 
-    public function getCount(){
+    public function getCount()
+    {
         try {
             $items=Items::all();
             $itemsCount=$items->count();
@@ -151,6 +152,5 @@ class ItemsController extends Controller
         } catch (\Exception $th) {
             return  $this->returnError('something went wrong',500);
         }
-	
 	}
 }
